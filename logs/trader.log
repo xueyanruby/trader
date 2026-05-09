@@ -1,0 +1,381 @@
+2026-05-08 17:34:47.317 | INFO     | __main__:cmd_backtest:93 - === BACKTEST: strategy=momentum_12_1 | market=us | 2018-01-01 → 2024-12-31 ===
+2026-05-08 17:34:47.317 | INFO     | __main__:cmd_backtest:104 - No universe configured — fetching S&P 500
+2026-05-08 17:34:48.288 | WARNING  | src.data.us_fetcher:get_universe:46 - Wikipedia S&P 500 fetch failed (HTTP Error 403: Forbidden); using fallback
+2026-05-08 17:34:48.289 | INFO     | src.data.base_fetcher:get_prices:64 - Fetching prices for 30 symbols [2018-01-01 → 2024-12-31]
+2026-05-08 17:34:56.097 | INFO     | src.data.us_fetcher:_fetch_prices:93 - Prices fetched: 30/30 symbols, 1760 rows
+2026-05-08 17:34:56.098 | INFO     | src.data.base_fetcher:get_prices:64 - Fetching prices for 1 symbols [2018-01-01 → 2024-12-31]
+2026-05-08 17:34:57.521 | INFO     | src.data.us_fetcher:_fetch_prices:93 - Prices fetched: 1/1 symbols, 1760 rows
+2026-05-08 17:34:57.527 | INFO     | src.selection.screener:apply:72 - Screener: starting with 30 symbols
+2026-05-08 17:34:57.534 | INFO     | src.selection.screener:apply:101 - Screener: 30 symbols pass all filters
+2026-05-08 17:34:57.542 | INFO     | src.backtest.engine:run:160 - Running backtest: strategy=momentum_12_1, rebalance=M, dates=58, symbols=30
+2026-05-08 17:34:57.544 | WARNING  | src.data.preprocessor:compute_momentum:113 - Not enough data for momentum calculation
+2026-05-08 17:34:57.544 | WARNING  | src.data.preprocessor:compute_momentum:113 - Not enough data for momentum calculation
+2026-05-08 17:34:57.544 | WARNING  | src.data.preprocessor:compute_momentum:113 - Not enough data for momentum calculation
+2026-05-08 17:34:57.545 | WARNING  | src.data.preprocessor:compute_momentum:113 - Not enough data for momentum calculation
+2026-05-08 17:34:57.545 | WARNING  | src.data.preprocessor:compute_momentum:113 - Not enough data for momentum calculation
+2026-05-08 17:34:57.545 | WARNING  | src.data.preprocessor:compute_momentum:113 - Not enough data for momentum calculation
+2026-05-08 17:34:57.545 | WARNING  | src.data.preprocessor:compute_momentum:113 - Not enough data for momentum calculation
+2026-05-08 17:34:57.546 | WARNING  | src.data.preprocessor:compute_momentum:113 - Not enough data for momentum calculation
+2026-05-08 17:34:57.546 | WARNING  | src.data.preprocessor:compute_momentum:113 - Not enough data for momentum calculation
+2026-05-08 17:34:57.546 | WARNING  | src.data.preprocessor:compute_momentum:113 - Not enough data for momentum calculation
+2026-05-08 17:35:36.460 | INFO     | src.backtest.engine:plot:98 - Plot saved to backtest_result.png
+2026-05-08 17:35:36.462 | INFO     | __main__:cmd_backtest:163 - Backtest complete.
+2026-05-08 17:56:00.059 | INFO     | src.execution.paper_broker:__init__:43 - PaperBroker initialised: cash=$1,000,000.00, slippage=5bps, commission=0.10%
+2026-05-08 17:56:00.059 | INFO     | __main__:cmd_watch:288 - =======================================================
+2026-05-08 17:56:00.059 | INFO     | __main__:cmd_watch:289 -   盯盤模式啟動
+2026-05-08 17:56:00.059 | INFO     | __main__:cmd_watch:290 -   策略    : momentum_12_1
+2026-05-08 17:56:00.059 | INFO     | __main__:cmd_watch:291 -   信號Cron: 5 5 * * 2-6
+2026-05-08 17:56:00.059 | INFO     | __main__:cmd_watch:292 -   止損輪詢: 每 300s
+2026-05-08 17:56:00.059 | INFO     | __main__:cmd_watch:293 -   通知渠道: ['email']
+2026-05-08 17:56:00.059 | INFO     | __main__:cmd_watch:294 - =======================================================
+2026-05-08 17:56:05.162 | ERROR    | src.notifier:send:299 - 郵件發送失敗：(501, b'5.5.2 Cannot Decode response. For more information, go to\n5.5.2  https://support.google.com/a/answer/3221692 5a478bee46e88-2f8884752ccsm1435372eec.17 - gsmtp')
+2026-05-08 17:56:05.163 | ERROR    | src.notifier:_dispatch:457 - 所有通知渠道均發送失敗：【Auto Trader】盯盤模式已啟動
+2026-05-08 17:56:05.163 | INFO     | src.scheduler:__init__:270 - WatchScheduler 初始化：strategy=momentum_12_1, market=us, signal_cron='5 5 * * 2-6'
+2026-05-08 17:56:05.163 | INFO     | src.scheduler:__init__:275 - 價格監控間隔 — A 股(分鐘線):60s  港股(快照):120s  美股(快照):300s
+2026-05-08 17:56:05.163 | INFO     | src.scheduler:__init__:282 - 自選股名單（2 只）：['00700', 'AAPL']
+2026-05-08 17:56:05.163 | INFO     | src.scheduler:__init__:283 - 同時盯持倉：True  重複警報：False
+2026-05-08 17:56:05.166 | INFO     | src.scheduler:start:301 - 已添加定時信號任務：cron='5 5 * * 2-6'
+2026-05-08 17:56:05.166 | INFO     | src.scheduler:_add_price_monitor_jobs:347 - 美股快照監控：每 300s
+2026-05-08 17:56:05.166 | INFO     | src.scheduler:start:307 - 盯盤調度器啟動，按 Ctrl-C 退出...
+2026-05-08 17:57:33.149 | INFO     | src.scheduler:start:311 - 調度器已停止
+2026-05-08 17:57:56.695 | INFO     | src.execution.paper_broker:__init__:43 - PaperBroker initialised: cash=$1,000,000.00, slippage=5bps, commission=0.10%
+2026-05-08 17:57:56.696 | INFO     | __main__:cmd_watch:288 - =======================================================
+2026-05-08 17:57:56.696 | INFO     | __main__:cmd_watch:289 -   盯盤模式啟動
+2026-05-08 17:57:56.696 | INFO     | __main__:cmd_watch:290 -   策略    : momentum_12_1
+2026-05-08 17:57:56.696 | INFO     | __main__:cmd_watch:291 -   信號Cron: 5 5 * * 2-6
+2026-05-08 17:57:56.696 | INFO     | __main__:cmd_watch:292 -   止損輪詢: 每 300s
+2026-05-08 17:57:56.696 | INFO     | __main__:cmd_watch:293 -   通知渠道: ['email']
+2026-05-08 17:57:56.696 | INFO     | __main__:cmd_watch:294 - =======================================================
+2026-05-08 17:57:57.093 | ERROR    | src.notifier:send:299 - 郵件發送失敗：Connection unexpectedly closed
+2026-05-08 17:57:57.094 | ERROR    | src.notifier:_dispatch:457 - 所有通知渠道均發送失敗：【Auto Trader】盯盤模式已啟動
+2026-05-08 17:57:57.095 | INFO     | src.scheduler:__init__:270 - WatchScheduler 初始化：strategy=momentum_12_1, market=us, signal_cron='5 5 * * 2-6'
+2026-05-08 17:57:57.095 | INFO     | src.scheduler:__init__:275 - 價格監控間隔 — A 股(分鐘線):60s  港股(快照):120s  美股(快照):300s
+2026-05-08 17:57:57.095 | INFO     | src.scheduler:__init__:282 - 自選股名單（2 只）：['00700', 'AAPL']
+2026-05-08 17:57:57.096 | INFO     | src.scheduler:__init__:283 - 同時盯持倉：True  重複警報：False
+2026-05-08 17:57:57.101 | INFO     | src.scheduler:start:301 - 已添加定時信號任務：cron='5 5 * * 2-6'
+2026-05-08 17:57:57.101 | INFO     | src.scheduler:_add_price_monitor_jobs:347 - 美股快照監控：每 300s
+2026-05-08 17:57:57.102 | INFO     | src.scheduler:start:307 - 盯盤調度器啟動，按 Ctrl-C 退出...
+2026-05-08 17:59:14.024 | INFO     | src.scheduler:start:311 - 調度器已停止
+2026-05-08 17:59:17.333 | INFO     | src.execution.paper_broker:__init__:43 - PaperBroker initialised: cash=$1,000,000.00, slippage=5bps, commission=0.10%
+2026-05-08 17:59:17.333 | INFO     | __main__:cmd_watch:288 - =======================================================
+2026-05-08 17:59:17.333 | INFO     | __main__:cmd_watch:289 -   盯盤模式啟動
+2026-05-08 17:59:17.333 | INFO     | __main__:cmd_watch:290 -   策略    : momentum_12_1
+2026-05-08 17:59:17.333 | INFO     | __main__:cmd_watch:291 -   信號Cron: 5 5 * * 2-6
+2026-05-08 17:59:17.333 | INFO     | __main__:cmd_watch:292 -   止損輪詢: 每 300s
+2026-05-08 17:59:17.333 | INFO     | __main__:cmd_watch:293 -   通知渠道: ['email']
+2026-05-08 17:59:17.333 | INFO     | __main__:cmd_watch:294 - =======================================================
+2026-05-08 17:59:17.570 | ERROR    | src.notifier:send:310 - 郵件發送失敗：Connection unexpectedly closed
+2026-05-08 17:59:17.571 | ERROR    | src.notifier:_dispatch:468 - 所有通知渠道均發送失敗：【Auto Trader】盯盤模式已啟動
+2026-05-08 17:59:17.571 | INFO     | src.scheduler:__init__:270 - WatchScheduler 初始化：strategy=momentum_12_1, market=us, signal_cron='5 5 * * 2-6'
+2026-05-08 17:59:17.571 | INFO     | src.scheduler:__init__:275 - 價格監控間隔 — A 股(分鐘線):60s  港股(快照):120s  美股(快照):300s
+2026-05-08 17:59:17.572 | INFO     | src.scheduler:__init__:282 - 自選股名單（2 只）：['00700', 'AAPL']
+2026-05-08 17:59:17.572 | INFO     | src.scheduler:__init__:283 - 同時盯持倉：True  重複警報：False
+2026-05-08 17:59:17.576 | INFO     | src.scheduler:start:301 - 已添加定時信號任務：cron='5 5 * * 2-6'
+2026-05-08 17:59:17.576 | INFO     | src.scheduler:_add_price_monitor_jobs:347 - 美股快照監控：每 300s
+2026-05-08 17:59:17.576 | INFO     | src.scheduler:start:307 - 盯盤調度器啟動，按 Ctrl-C 退出...
+2026-05-08 18:02:13.233 | INFO     | src.scheduler:start:311 - 調度器已停止
+2026-05-08 18:02:15.240 | INFO     | src.execution.paper_broker:__init__:43 - PaperBroker initialised: cash=$1,000,000.00, slippage=5bps, commission=0.10%
+2026-05-08 18:02:15.240 | INFO     | __main__:cmd_watch:288 - =======================================================
+2026-05-08 18:02:15.240 | INFO     | __main__:cmd_watch:289 -   盯盤模式啟動
+2026-05-08 18:02:15.240 | INFO     | __main__:cmd_watch:290 -   策略    : momentum_12_1
+2026-05-08 18:02:15.240 | INFO     | __main__:cmd_watch:291 -   信號Cron: 5 5 * * 2-6
+2026-05-08 18:02:15.240 | INFO     | __main__:cmd_watch:292 -   止損輪詢: 每 300s
+2026-05-08 18:02:15.240 | INFO     | __main__:cmd_watch:293 -   通知渠道: ['email']
+2026-05-08 18:02:15.240 | INFO     | __main__:cmd_watch:294 - =======================================================
+2026-05-08 18:02:15.516 | ERROR    | src.notifier:send:310 - 郵件發送失敗：Connection unexpectedly closed
+2026-05-08 18:02:15.516 | ERROR    | src.notifier:_dispatch:468 - 所有通知渠道均發送失敗：【Auto Trader】盯盤模式已啟動
+2026-05-08 18:02:15.517 | INFO     | src.scheduler:__init__:270 - WatchScheduler 初始化：strategy=momentum_12_1, market=us, signal_cron='5 5 * * 2-6'
+2026-05-08 18:02:15.517 | INFO     | src.scheduler:__init__:275 - 價格監控間隔 — A 股(分鐘線):60s  港股(快照):120s  美股(快照):300s
+2026-05-08 18:02:15.517 | INFO     | src.scheduler:__init__:282 - 自選股名單（2 只）：['00700', 'AAPL']
+2026-05-08 18:02:15.517 | INFO     | src.scheduler:__init__:283 - 同時盯持倉：True  重複警報：False
+2026-05-08 18:02:15.521 | INFO     | src.scheduler:start:301 - 已添加定時信號任務：cron='5 5 * * 2-6'
+2026-05-08 18:02:15.521 | INFO     | src.scheduler:_add_price_monitor_jobs:347 - 美股快照監控：每 300s
+2026-05-08 18:02:15.521 | INFO     | src.scheduler:start:307 - 盯盤調度器啟動，按 Ctrl-C 退出...
+2026-05-08 18:02:18.940 | INFO     | src.scheduler:start:311 - 調度器已停止
+2026-05-08 18:02:27.925 | INFO     | src.execution.paper_broker:__init__:43 - PaperBroker initialised: cash=$1,000,000.00, slippage=5bps, commission=0.10%
+2026-05-08 18:02:27.925 | INFO     | __main__:cmd_watch:288 - =======================================================
+2026-05-08 18:02:27.925 | INFO     | __main__:cmd_watch:289 -   盯盤模式啟動
+2026-05-08 18:02:27.925 | INFO     | __main__:cmd_watch:290 -   策略    : momentum_12_1
+2026-05-08 18:02:27.925 | INFO     | __main__:cmd_watch:291 -   信號Cron: 5 5 * * 2-6
+2026-05-08 18:02:27.925 | INFO     | __main__:cmd_watch:292 -   止損輪詢: 每 300s
+2026-05-08 18:02:27.925 | INFO     | __main__:cmd_watch:293 -   通知渠道: ['email']
+2026-05-08 18:02:27.925 | INFO     | __main__:cmd_watch:294 - =======================================================
+2026-05-08 18:02:28.137 | ERROR    | src.notifier:send:310 - 郵件發送失敗：Connection unexpectedly closed
+2026-05-08 18:02:28.137 | ERROR    | src.notifier:_dispatch:468 - 所有通知渠道均發送失敗：【Auto Trader】盯盤模式已啟動
+2026-05-08 18:02:28.138 | INFO     | src.scheduler:__init__:270 - WatchScheduler 初始化：strategy=momentum_12_1, market=us, signal_cron='5 5 * * 2-6'
+2026-05-08 18:02:28.138 | INFO     | src.scheduler:__init__:275 - 價格監控間隔 — A 股(分鐘線):60s  港股(快照):120s  美股(快照):300s
+2026-05-08 18:02:28.138 | INFO     | src.scheduler:__init__:282 - 自選股名單（2 只）：['00700', 'AAPL']
+2026-05-08 18:02:28.138 | INFO     | src.scheduler:__init__:283 - 同時盯持倉：True  重複警報：False
+2026-05-08 18:02:28.142 | INFO     | src.scheduler:start:301 - 已添加定時信號任務：cron='5 5 * * 2-6'
+2026-05-08 18:02:28.142 | INFO     | src.scheduler:_add_price_monitor_jobs:347 - 美股快照監控：每 300s
+2026-05-08 18:02:28.142 | INFO     | src.scheduler:start:307 - 盯盤調度器啟動，按 Ctrl-C 退出...
+2026-05-08 18:02:30.981 | INFO     | src.scheduler:start:311 - 調度器已停止
+2026-05-08 18:07:19.722 | INFO     | src.execution.paper_broker:__init__:43 - PaperBroker initialised: cash=$1,000,000.00, slippage=5bps, commission=0.10%
+2026-05-08 18:07:19.723 | INFO     | __main__:cmd_watch:295 - =======================================================
+2026-05-08 18:07:19.723 | INFO     | __main__:cmd_watch:296 -   盯盤模式啟動
+2026-05-08 18:07:19.723 | INFO     | __main__:cmd_watch:297 -   策略    : momentum_12_1
+2026-05-08 18:07:19.723 | INFO     | __main__:cmd_watch:298 -   信號Cron: 5 5 * * 2-6
+2026-05-08 18:07:19.723 | INFO     | __main__:cmd_watch:299 -   止損輪詢: 每 300s
+2026-05-08 18:07:19.723 | INFO     | __main__:cmd_watch:300 -   通知渠道: ['email']
+2026-05-08 18:07:19.723 | INFO     | __main__:cmd_watch:301 - =======================================================
+2026-05-08 18:07:20.532 | INFO     | src.notifier:_dispatch:470 - 通知已發送至 1 個渠道：【Auto Trader】盯盤模式已啟動
+2026-05-08 18:07:20.533 | INFO     | src.scheduler:__init__:270 - WatchScheduler 初始化：strategy=momentum_12_1, market=us, signal_cron='5 5 * * 2-6'
+2026-05-08 18:07:20.534 | INFO     | src.scheduler:__init__:275 - 價格監控間隔 — A 股(分鐘線):60s  港股(快照):120s  美股(快照):300s
+2026-05-08 18:07:20.534 | INFO     | src.scheduler:__init__:282 - 自選股名單（2 只）：['00700', 'AAPL']
+2026-05-08 18:07:20.534 | INFO     | src.scheduler:__init__:283 - 同時盯持倉：True  重複警報：False
+2026-05-08 18:07:20.539 | INFO     | src.scheduler:start:301 - 已添加定時信號任務：cron='5 5 * * 2-6'
+2026-05-08 18:07:20.539 | INFO     | src.scheduler:_add_price_monitor_jobs:347 - 美股快照監控：每 300s
+2026-05-08 18:07:20.540 | INFO     | src.scheduler:start:307 - 盯盤調度器啟動，按 Ctrl-C 退出...
+2026-05-08 18:16:56.838 | INFO     | src.scheduler:start:311 - 調度器已停止
+2026-05-09 09:42:13.562 | INFO     | src.execution.paper_broker:__init__:43 - PaperBroker initialised: cash=$1,000,000.00, slippage=5bps, commission=0.10%
+2026-05-09 09:42:13.563 | INFO     | __main__:cmd_watch:295 - =======================================================
+2026-05-09 09:42:13.563 | INFO     | __main__:cmd_watch:296 -   盯盤模式啟動
+2026-05-09 09:42:13.563 | INFO     | __main__:cmd_watch:297 -   策略    : momentum_12_1
+2026-05-09 09:42:13.563 | INFO     | __main__:cmd_watch:298 -   信號Cron: 5 5 * * 2-6
+2026-05-09 09:42:13.563 | INFO     | __main__:cmd_watch:299 -   止損輪詢: 每 300s
+2026-05-09 09:42:13.563 | INFO     | __main__:cmd_watch:300 -   通知渠道: ['email']
+2026-05-09 09:42:13.563 | INFO     | __main__:cmd_watch:301 - =======================================================
+2026-05-09 09:42:15.364 | INFO     | src.notifier:_dispatch:538 - 通知已發送至 1 個渠道：【Auto Trader】盯盤模式已啟動
+2026-05-09 09:42:15.365 | INFO     | src.scheduler:__init__:279 - WatchScheduler 初始化：strategy=momentum_12_1, market=us, signal_cron='5 5 * * 2-6'
+2026-05-09 09:42:15.365 | INFO     | src.scheduler:__init__:284 - 價格監控間隔 — A 股(分鐘線):60s  港股(快照):120s  美股(快照):300s
+2026-05-09 09:42:15.365 | INFO     | src.scheduler:__init__:291 - 自選股名單（2 只）：['00700', 'AAPL']
+2026-05-09 09:42:15.365 | INFO     | src.scheduler:__init__:292 - 同時盯持倉：True  重複警報：False
+2026-05-09 09:42:15.371 | INFO     | src.scheduler:start:310 - 已添加定時信號任務：cron='5 5 * * 2-6'
+2026-05-09 09:42:15.372 | INFO     | src.scheduler:_add_price_monitor_jobs:372 - 美股快照監控：每 300s
+2026-05-09 09:42:15.372 | INFO     | src.scheduler:start:325 - 已添加技術信號掃描任務：間隔=1800s  短線=True  長線=True
+2026-05-09 09:42:15.372 | INFO     | src.scheduler:start:332 - 盯盤調度器啟動，按 Ctrl-C 退出...
+2026-05-09 09:42:15.381 | INFO     | src.scheduler:_run_signal_monitor:628 - [信號掃描] 開始 — 2026-05-09 09:42
+2026-05-09 09:42:15.381 | INFO     | src.scheduler:_run_signal_monitor:646 - [信號掃描] 掃描 2 只：['00700', 'AAPL']
+2026-05-09 09:42:20.719 | INFO     | src.notifier:send_buy_signal_alert:501 - 買入信號：00700 (short)，推送通知
+2026-05-09 09:42:22.064 | INFO     | src.notifier:_dispatch:538 - 通知已發送至 1 個渠道：【買入信號】00700  📈 短線 信號觸發
+2026-05-09 09:42:22.065 | INFO     | src.notifier:send_buy_signal_alert:501 - 買入信號：AAPL (short)，推送通知
+2026-05-09 09:42:23.246 | INFO     | src.notifier:_dispatch:538 - 通知已發送至 1 個渠道：【買入信號】AAPL  📈 短線 信號觸發
+2026-05-09 09:42:23.246 | INFO     | src.scheduler:_run_signal_monitor:693 - [信號掃描] 完成：發現 2 個信號，推送 2 個
+2026-05-09 09:54:55.971 | INFO     | src.scheduler:start:336 - 調度器已停止
+2026-05-09 10:06:28.586 | INFO     | src.execution.paper_broker:__init__:43 - PaperBroker initialised: cash=$1,000,000.00, slippage=5bps, commission=0.10%
+2026-05-09 10:06:28.587 | INFO     | __main__:cmd_watch:295 - =======================================================
+2026-05-09 10:06:28.587 | INFO     | __main__:cmd_watch:296 -   盯盤模式啟動
+2026-05-09 10:06:28.587 | INFO     | __main__:cmd_watch:297 -   策略    : momentum_12_1
+2026-05-09 10:06:28.587 | INFO     | __main__:cmd_watch:298 -   信號Cron: 5 5 * * 2-6
+2026-05-09 10:06:28.587 | INFO     | __main__:cmd_watch:299 -   止損輪詢: 每 300s
+2026-05-09 10:06:28.587 | INFO     | __main__:cmd_watch:300 -   通知渠道: ['email']
+2026-05-09 10:06:28.587 | INFO     | __main__:cmd_watch:301 - =======================================================
+2026-05-09 10:06:29.495 | INFO     | src.notifier:_dispatch:538 - 通知已發送至 1 個渠道：【Auto Trader】盯盤模式已啟動
+2026-05-09 10:06:29.496 | INFO     | src.scheduler:__init__:289 - WatchScheduler 初始化：strategy=momentum_12_1, market=us, signal_cron='5 5 * * 2-6'
+2026-05-09 10:06:29.497 | INFO     | src.scheduler:__init__:294 - 價格監控間隔 — A 股(分鐘線):60s  港股(快照):120s  美股(快照):300s
+2026-05-09 10:06:29.497 | INFO     | src.scheduler:__init__:301 - 自選股名單（2 只）：['00700', 'DAO']
+2026-05-09 10:06:29.498 | INFO     | src.scheduler:__init__:302 - 同時盯持倉：True  重複警報：False
+2026-05-09 10:06:29.504 | INFO     | src.scheduler:start:320 - 已添加定時信號任務：cron='5 5 * * 2-6'
+2026-05-09 10:06:29.504 | INFO     | src.scheduler:_add_price_monitor_jobs:382 - 美股快照監控：每 300s
+2026-05-09 10:06:29.504 | INFO     | src.scheduler:start:335 - 已添加技術信號掃描任務：間隔=1800s  短線=True  長線=True
+2026-05-09 10:06:29.505 | INFO     | src.scheduler:start:342 - 盯盤調度器啟動，按 Ctrl-C 退出...
+2026-05-09 10:06:29.510 | INFO     | src.scheduler:_run_signal_monitor:638 - [信號掃描] 開始 — 2026-05-09 10:06
+2026-05-09 10:06:29.510 | INFO     | src.scheduler:_run_signal_monitor:656 - [信號掃描] 掃描 2 只：['00700', 'DAO']
+2026-05-09 10:06:32.288 | INFO     | src.notifier:send_buy_signal_alert:501 - 買入信號：DAO (short)，推送通知
+2026-05-09 10:06:33.086 | INFO     | src.notifier:_dispatch:538 - 通知已發送至 1 個渠道：【買入信號】DAO  📈 短線 信號觸發
+2026-05-09 10:06:33.086 | INFO     | src.scheduler:_run_signal_monitor:703 - [信號掃描] 完成：發現 1 個信號，推送 1 個
+2026-05-09 10:23:13.452 | INFO     | src.scheduler:start:346 - 調度器已停止
+2026-05-09 15:00:52.514 | INFO     | src.execution.paper_broker:__init__:43 - PaperBroker initialised: cash=$1,000,000.00, slippage=5bps, commission=0.10%
+2026-05-09 15:00:52.514 | INFO     | __main__:cmd_watch:305 - =======================================================
+2026-05-09 15:00:52.514 | INFO     | __main__:cmd_watch:306 -   盯盤模式啟動
+2026-05-09 15:00:52.514 | INFO     | __main__:cmd_watch:307 -   策略    : momentum_12_1
+2026-05-09 15:00:52.514 | INFO     | __main__:cmd_watch:308 -   信號Cron: 5 5 * * 2-6
+2026-05-09 15:00:52.514 | INFO     | __main__:cmd_watch:309 -   止損輪詢: 每 300s
+2026-05-09 15:00:52.514 | INFO     | __main__:cmd_watch:310 -   通知渠道: ['email']
+2026-05-09 15:00:52.514 | INFO     | __main__:cmd_watch:311 - =======================================================
+2026-05-09 15:00:53.543 | INFO     | src.notifier:_dispatch:538 - 通知已發送至 1 個渠道：【Auto Trader】盯盤模式已啟動
+2026-05-09 15:00:53.545 | INFO     | src.scheduler:__init__:308 - WatchScheduler 初始化：strategy=momentum_12_1, market=us, signal_cron='5 5 * * 2-6'
+2026-05-09 15:00:53.545 | INFO     | src.scheduler:__init__:313 - 價格監控間隔 — A 股(分鐘線):60s  港股(快照):120s  美股(快照):300s
+2026-05-09 15:00:53.545 | INFO     | src.scheduler:__init__:320 - 自選股名單（2 只）：['00700', 'DAO']
+2026-05-09 15:00:53.545 | INFO     | src.scheduler:__init__:321 - 同時盯持倉：True  重複警報：False
+2026-05-09 15:00:53.553 | INFO     | src.scheduler:start:339 - 已添加定時信號任務：cron='5 5 * * 2-6'
+2026-05-09 15:00:53.553 | INFO     | src.scheduler:_add_price_monitor_jobs:401 - 美股快照監控：每 300s
+2026-05-09 15:00:53.553 | INFO     | src.scheduler:start:354 - 已添加技術信號掃描任務：間隔=1800s  短線=True  長線=True
+2026-05-09 15:00:53.553 | INFO     | src.scheduler:start:361 - 盯盤調度器啟動，按 Ctrl-C 退出...
+2026-05-09 15:00:53.559 | INFO     | src.scheduler:_run_signal_monitor:677 - [信號掃描] 開始 — 2026-05-09 15:00
+2026-05-09 15:00:53.561 | INFO     | src.scheduler:_run_signal_monitor:695 - [信號掃描] 掃描 2 只：['00700', 'DAO']
+2026-05-09 15:00:55.735 | INFO     | src.data.base_fetcher:get_prices:64 - Fetching prices for 1 symbols [2025-04-04 → 2026-05-09]
+2026-05-09 15:00:56.850 | INFO     | src.notifier:send_buy_signal_alert:501 - 買入信號：DAO (short)，推送通知
+2026-05-09 15:00:57.832 | INFO     | src.notifier:_dispatch:538 - 通知已發送至 1 個渠道：【買入信號】DAO  📈 短線 信號觸發
+2026-05-09 15:00:57.832 | INFO     | src.scheduler:_run_signal_monitor:742 - [信號掃描] 完成：發現 1 個信號，推送 1 個
+2026-05-09 15:17:45.921 | INFO     | __main__:cmd_backtest:102 - === BACKTEST: strategy=momentum_12_1 | market=us | 2018-01-01 → 2024-12-31 ===
+2026-05-09 15:17:45.921 | INFO     | __main__:cmd_backtest:122 - No universe configured — fetching S&P 500
+2026-05-09 15:17:46.961 | WARNING  | src.data.us_fetcher:get_universe:46 - Wikipedia S&P 500 fetch failed (HTTP Error 403: Forbidden); using fallback
+2026-05-09 15:17:46.978 | INFO     | src.selection.screener:apply:72 - Screener: starting with 30 symbols
+2026-05-09 15:17:46.989 | INFO     | src.selection.screener:apply:101 - Screener: 30 symbols pass all filters
+2026-05-09 15:17:46.997 | INFO     | src.backtest.engine:run:160 - Running backtest: strategy=momentum_12_1, rebalance=M, dates=58, symbols=30
+2026-05-09 15:17:46.999 | WARNING  | src.data.preprocessor:compute_momentum:113 - Not enough data for momentum calculation
+2026-05-09 15:17:46.999 | WARNING  | src.data.preprocessor:compute_momentum:113 - Not enough data for momentum calculation
+2026-05-09 15:17:47.000 | WARNING  | src.data.preprocessor:compute_momentum:113 - Not enough data for momentum calculation
+2026-05-09 15:17:47.000 | WARNING  | src.data.preprocessor:compute_momentum:113 - Not enough data for momentum calculation
+2026-05-09 15:17:47.001 | WARNING  | src.data.preprocessor:compute_momentum:113 - Not enough data for momentum calculation
+2026-05-09 15:17:47.001 | WARNING  | src.data.preprocessor:compute_momentum:113 - Not enough data for momentum calculation
+2026-05-09 15:17:47.001 | WARNING  | src.data.preprocessor:compute_momentum:113 - Not enough data for momentum calculation
+2026-05-09 15:17:47.002 | WARNING  | src.data.preprocessor:compute_momentum:113 - Not enough data for momentum calculation
+2026-05-09 15:17:47.002 | WARNING  | src.data.preprocessor:compute_momentum:113 - Not enough data for momentum calculation
+2026-05-09 15:17:47.003 | WARNING  | src.data.preprocessor:compute_momentum:113 - Not enough data for momentum calculation
+2026-05-09 15:17:47.054 | INFO     | __main__:cmd_backtest:189 - Backtest complete.
+2026-05-09 15:23:38.460 | INFO     | src.scheduler:start:365 - 調度器已停止
+2026-05-09 15:23:46.116 | INFO     | src.execution.paper_broker:__init__:43 - PaperBroker initialised: cash=$1,000,000.00, slippage=5bps, commission=0.10%
+2026-05-09 15:23:46.116 | INFO     | __main__:cmd_watch:324 - =======================================================
+2026-05-09 15:23:46.116 | INFO     | __main__:cmd_watch:325 -   盯盤模式啟動
+2026-05-09 15:23:46.116 | INFO     | __main__:cmd_watch:326 -   策略    : momentum_12_1
+2026-05-09 15:23:46.116 | INFO     | __main__:cmd_watch:327 -   信號Cron: 5 5 * * 2-6
+2026-05-09 15:23:46.116 | INFO     | __main__:cmd_watch:328 -   止損輪詢: 每 300s
+2026-05-09 15:23:46.116 | INFO     | __main__:cmd_watch:329 -   通知渠道: ['email']
+2026-05-09 15:23:46.116 | INFO     | __main__:cmd_watch:330 - =======================================================
+2026-05-09 15:23:47.416 | INFO     | src.notifier:_dispatch:538 - 通知已發送至 1 個渠道：【Auto Trader】盯盤模式已啟動
+2026-05-09 15:23:47.417 | INFO     | src.scheduler:__init__:313 - WatchScheduler 初始化：strategy=momentum_12_1, market=us, signal_cron='5 5 * * 2-6'
+2026-05-09 15:23:47.418 | INFO     | src.scheduler:__init__:318 - 價格監控間隔 — A 股(分鐘線):60s  港股(快照):10s  美股(快照):10s
+2026-05-09 15:23:47.418 | INFO     | src.scheduler:__init__:325 - 自選股名單（2 只）：['00700', 'DAO']
+2026-05-09 15:23:47.418 | INFO     | src.scheduler:__init__:326 - 同時盯持倉：True  重複警報：False
+2026-05-09 15:23:47.425 | INFO     | src.scheduler:start:344 - 已添加定時信號任務：cron='5 5 * * 2-6'
+2026-05-09 15:23:47.426 | INFO     | src.scheduler:_add_price_monitor_jobs:406 - 美股快照監控：每 10s
+2026-05-09 15:23:47.426 | INFO     | src.scheduler:start:359 - 已添加技術信號掃描任務：間隔=1800s  短線=True  長線=True
+2026-05-09 15:23:47.426 | INFO     | src.scheduler:start:366 - 盯盤調度器啟動，按 Ctrl-C 退出...
+2026-05-09 15:23:47.431 | INFO     | src.scheduler:_run_signal_monitor:686 - [信號掃描] 開始 — 2026-05-09 15:23
+2026-05-09 15:23:47.431 | INFO     | src.scheduler:_run_signal_monitor:704 - [信號掃描] 掃描 2 只：['00700', 'DAO']
+2026-05-09 15:23:53.707 | INFO     | src.data.base_fetcher:get_prices:64 - Fetching prices for 1 symbols [2025-04-04 → 2026-05-09]
+2026-05-09 15:23:54.601 | INFO     | src.scheduler:_run_signal_monitor:725 - [信號掃描] 本輪無買入信號
+2026-05-09 15:34:07.683 | INFO     | src.scheduler:start:370 - 調度器已停止
+2026-05-09 15:44:07.917 | INFO     | src.execution.paper_broker:__init__:43 - PaperBroker initialised: cash=$1,000,000.00, slippage=5bps, commission=0.10%
+2026-05-09 15:44:07.918 | INFO     | __main__:cmd_watch:324 - =======================================================
+2026-05-09 15:44:07.918 | INFO     | __main__:cmd_watch:325 -   盯盤模式啟動
+2026-05-09 15:44:07.918 | INFO     | __main__:cmd_watch:326 -   策略    : momentum_12_1
+2026-05-09 15:44:07.918 | INFO     | __main__:cmd_watch:327 -   信號Cron: 5 5 * * 2-6
+2026-05-09 15:44:07.918 | INFO     | __main__:cmd_watch:328 -   止損輪詢: 每 300s
+2026-05-09 15:44:07.918 | INFO     | __main__:cmd_watch:329 -   通知渠道: ['email']
+2026-05-09 15:44:07.918 | INFO     | __main__:cmd_watch:330 - =======================================================
+2026-05-09 15:44:08.879 | INFO     | src.notifier:_dispatch:538 - 通知已發送至 1 個渠道：【Auto Trader】盯盤模式已啟動
+2026-05-09 15:44:08.880 | INFO     | src.scheduler:__init__:313 - WatchScheduler 初始化：strategy=momentum_12_1, market=us, signal_cron='5 5 * * 2-6'
+2026-05-09 15:44:08.880 | INFO     | src.scheduler:__init__:318 - 價格監控間隔 — A 股:60s  港股:10s  美股:10s
+2026-05-09 15:44:08.880 | INFO     | src.scheduler:__init__:325 - 自選股名單（2 只）：['00700', 'DAO']
+2026-05-09 15:44:08.881 | INFO     | src.scheduler:__init__:326 - 同時盯持倉：True  重複警報：False
+2026-05-09 15:44:08.886 | INFO     | src.scheduler:start:344 - 已添加定時信號任務：cron='5 5 * * 2-6'
+2026-05-09 15:44:08.886 | INFO     | src.scheduler:_add_price_monitor_jobs:410 - 美股快照監控：每 10s
+2026-05-09 15:44:08.886 | INFO     | src.scheduler:start:360 - 已添加技術信號掃描任務：間隔=1800s  短線=True  長線=True
+2026-05-09 15:44:08.886 | INFO     | src.scheduler:start:367 - 盯盤調度器啟動，按 Ctrl-C 退出...
+2026-05-09 15:44:08.891 | INFO     | src.scheduler:_run_signal_monitor:691 - [信號掃描] 開始 — 2026-05-09 15:44
+2026-05-09 15:44:08.891 | INFO     | src.scheduler:_run_signal_monitor:709 - [信號掃描] 掃描 2 只：['00700', 'DAO']
+2026-05-09 15:44:11.109 | INFO     | src.data.base_fetcher:get_prices:64 - Fetching prices for 1 symbols [2025-04-04 → 2026-05-09]
+2026-05-09 15:44:11.846 | INFO     | src.scheduler:_run_signal_monitor:730 - [信號掃描] 本輪無買入信號
+2026-05-09 16:04:40.728 | INFO     | src.scheduler:start:371 - 調度器已停止
+2026-05-09 16:04:46.526 | INFO     | src.execution.paper_broker:__init__:43 - PaperBroker initialised: cash=$1,000,000.00, slippage=5bps, commission=0.10%
+2026-05-09 16:04:46.526 | INFO     | __main__:cmd_watch:324 - =======================================================
+2026-05-09 16:04:46.526 | INFO     | __main__:cmd_watch:325 -   盯盤模式啟動
+2026-05-09 16:04:46.526 | INFO     | __main__:cmd_watch:326 -   策略    : momentum_12_1
+2026-05-09 16:04:46.526 | INFO     | __main__:cmd_watch:327 -   信號Cron: 5 5 * * 2-6
+2026-05-09 16:04:46.526 | INFO     | __main__:cmd_watch:328 -   止損輪詢: 每 300s
+2026-05-09 16:04:46.526 | INFO     | __main__:cmd_watch:329 -   通知渠道: ['email']
+2026-05-09 16:04:46.526 | INFO     | __main__:cmd_watch:330 - =======================================================
+2026-05-09 16:04:47.673 | INFO     | src.notifier:_dispatch:538 - 通知已發送至 1 個渠道：【Auto Trader】盯盤模式已啟動
+2026-05-09 16:04:47.674 | INFO     | src.scheduler:__init__:313 - WatchScheduler 初始化：strategy=momentum_12_1, market=us, signal_cron='5 5 * * 2-6'
+2026-05-09 16:04:47.674 | INFO     | src.scheduler:__init__:318 - 價格監控間隔 — A 股:60s  港股:10s  美股:10s
+2026-05-09 16:04:47.675 | INFO     | src.scheduler:__init__:325 - 自選股名單（3 只）：['00700', '01810', 'DAO']
+2026-05-09 16:04:47.675 | INFO     | src.scheduler:__init__:326 - 同時盯持倉：True  重複警報：False
+2026-05-09 16:04:47.681 | INFO     | src.scheduler:start:344 - 已添加定時信號任務：cron='5 5 * * 2-6'
+2026-05-09 16:04:47.681 | INFO     | src.scheduler:_add_price_monitor_jobs:410 - 美股快照監控：每 10s
+2026-05-09 16:04:47.682 | INFO     | src.scheduler:start:360 - 已添加技術信號掃描任務：間隔=1800s  短線=True  長線=True
+2026-05-09 16:04:47.682 | INFO     | src.scheduler:start:367 - 盯盤調度器啟動，按 Ctrl-C 退出...
+2026-05-09 16:04:47.686 | INFO     | src.scheduler:_run_signal_monitor:691 - [信號掃描] 開始 — 2026-05-09 16:04
+2026-05-09 16:04:47.686 | INFO     | src.scheduler:_run_signal_monitor:709 - [信號掃描] 掃描 3 只：['00700', '01810', 'DAO']
+2026-05-09 16:04:49.716 | INFO     | src.data.base_fetcher:get_prices:64 - Fetching prices for 2 symbols [2025-04-04 → 2026-05-09]
+2026-05-09 16:04:50.585 | INFO     | src.scheduler:_run_signal_monitor:730 - [信號掃描] 本輪無買入信號
+2026-05-09 16:12:53.596 | INFO     | src.scheduler:start:371 - 調度器已停止
+2026-05-09 17:42:48.761 | WARNING  | src.execution.futu_trade_broker:<module>:72 - futu-api 未安裝，FutuTradeBroker 不可用。請執行：pip install futu-api
+2026-05-09 17:43:10.345 | WARNING  | src.execution.futu_trade_broker:<module>:72 - futu-api 未安裝，FutuTradeBroker 不可用。請執行：pip install futu-api
+2026-05-09 17:43:24.524 | WARNING  | src.execution.futu_trade_broker:<module>:72 - futu-api 未安裝，FutuTradeBroker 不可用。請執行：pip install futu-api
+2026-05-09 17:44:32.068 | WARNING  | src.execution.futu_trade_broker:<module>:72 - futu-api 未安裝，FutuTradeBroker 不可用。請執行：pip install futu-api
+2026-05-09 17:46:53.120 | WARNING  | src.execution.futu_trade_broker:<module>:72 - futu-api 未安裝，FutuTradeBroker 不可用。請執行：pip install futu-api
+2026-05-09 17:48:12.574 | WARNING  | src.execution.futu_trade_broker:<module>:72 - futu-api 未安裝，FutuTradeBroker 不可用。請執行：pip install futu-api
+2026-05-09 17:53:01.305 | INFO     | src.execution.futu_trade_broker:__init__:192 - FutuTradeBroker 初始化：host=127.0.0.1:11111  market=hk  acc_index=0  env=SIMULATE  lot_size=100
+2026-05-09 17:53:01.305 | INFO     | __main__:_build_broker:312 - Broker: FutuTradeBroker [SIMULATE]  market=hk  host=127.0.0.1:11111
+2026-05-09 17:53:01.306 | INFO     | __main__:cmd_paper:214 - === PAPER TRADING: strategy=us_trend ===
+2026-05-09 17:53:01.321 | INFO     | __main__:cmd_paper:215 - Starting equity: $1,000,000.00
+2026-05-09 17:53:02.324 | WARNING  | src.data.us_fetcher:get_universe:46 - Wikipedia S&P 500 fetch failed (HTTP Error 403: Forbidden); using fallback
+2026-05-09 17:53:02.326 | INFO     | src.data.base_fetcher:get_prices:64 - Fetching prices for 30 symbols [2018-01-01 → 2026-05-09]
+2026-05-09 17:53:08.933 | INFO     | src.selection.screener:apply:72 - Screener: starting with 29 symbols
+2026-05-09 17:53:08.940 | INFO     | src.selection.screener:apply:101 - Screener: 29 symbols pass all filters
+2026-05-09 17:53:08.944 | INFO     | src.strategies.us_trend_strategy:generate_signals:170 - USTrend: 1 個標的滿足趨勢+支撐條件 （watchlist 8 只，entry_zone=5%）
+2026-05-09 17:53:08.953 | ERROR    | src.execution.futu_trade_broker:place_order:403 - place_order 異常 [MSFT]：place_order() got an unexpected keyword argument 'trd_mkt'
+2026-05-09 17:53:08.953 | INFO     | __main__:cmd_paper:269 - Placed 1 orders
+2026-05-09 17:53:08.953 | INFO     | __main__:cmd_paper:271 -   BUY  MSFT       qty=   323  status=rejected
+2026-05-09 17:53:08.963 | INFO     | __main__:cmd_paper:278 - 
+Portfolio equity: $1,000,000.00
+2026-05-09 17:53:08.963 | INFO     | __main__:cmd_paper:279 - Cash:             $1,000,000.00
+2026-05-09 17:53:08.963 | INFO     | __main__:cmd_paper:280 - Positions:        0
+2026-05-09 17:53:48.965 | INFO     | src.execution.futu_trade_broker:__init__:192 - FutuTradeBroker 初始化：host=127.0.0.1:11111  market=hk  acc_index=0  env=SIMULATE  lot_size=100
+2026-05-09 17:53:48.965 | INFO     | __main__:_build_broker:312 - Broker: FutuTradeBroker [SIMULATE]  market=hk  host=127.0.0.1:11111
+2026-05-09 17:53:48.965 | INFO     | __main__:cmd_paper:214 - === PAPER TRADING: strategy=us_trend ===
+2026-05-09 17:53:48.970 | INFO     | __main__:cmd_paper:215 - Starting equity: $1,000,000.00
+2026-05-09 17:53:49.997 | WARNING  | src.data.us_fetcher:get_universe:46 - Wikipedia S&P 500 fetch failed (HTTP Error 403: Forbidden); using fallback
+2026-05-09 17:53:50.013 | INFO     | src.selection.screener:apply:72 - Screener: starting with 29 symbols
+2026-05-09 17:53:50.026 | INFO     | src.selection.screener:apply:101 - Screener: 29 symbols pass all filters
+2026-05-09 17:53:50.032 | INFO     | src.strategies.us_trend_strategy:generate_signals:170 - USTrend: 1 個標的滿足趨勢+支撐條件 （watchlist 8 只，entry_zone=5%）
+2026-05-09 17:53:50.056 | ERROR    | src.execution.futu_trade_broker:place_order:359 - place_order 失敗 [MSFT]：证券账户19251854不支持交易US.MSFT
+2026-05-09 17:53:50.056 | INFO     | __main__:cmd_paper:269 - Placed 1 orders
+2026-05-09 17:53:50.056 | INFO     | __main__:cmd_paper:271 -   BUY  MSFT       qty=   323  status=rejected
+2026-05-09 17:53:50.071 | INFO     | __main__:cmd_paper:278 - 
+Portfolio equity: $1,000,000.00
+2026-05-09 17:53:50.071 | INFO     | __main__:cmd_paper:279 - Cash:             $1,000,000.00
+2026-05-09 17:53:50.071 | INFO     | __main__:cmd_paper:280 - Positions:        0
+2026-05-09 17:54:52.657 | INFO     | src.execution.futu_trade_broker:__init__:192 - FutuTradeBroker 初始化：host=127.0.0.1:11111  market=hk  acc_index=0  env=SIMULATE  lot_size=100
+2026-05-09 17:54:52.657 | INFO     | __main__:_build_broker:312 - Broker: FutuTradeBroker [SIMULATE]  market=hk  host=127.0.0.1:11111
+2026-05-09 17:54:52.657 | INFO     | __main__:cmd_paper:214 - === PAPER TRADING: strategy=steady_short_term_hk ===
+2026-05-09 17:54:52.661 | INFO     | __main__:cmd_paper:215 - Starting equity: $1,000,000.00
+2026-05-09 17:54:53.695 | WARNING  | src.data.us_fetcher:get_universe:46 - Wikipedia S&P 500 fetch failed (HTTP Error 403: Forbidden); using fallback
+2026-05-09 17:54:53.712 | INFO     | src.selection.screener:apply:72 - Screener: starting with 29 symbols
+2026-05-09 17:54:53.721 | INFO     | src.selection.screener:apply:101 - Screener: 29 symbols pass all filters
+2026-05-09 17:54:53.732 | WARNING  | __main__:cmd_paper:251 - No signals generated. Nothing to trade.
+2026-05-09 17:56:37.148 | INFO     | src.execution.futu_trade_broker:__init__:192 - FutuTradeBroker 初始化：host=127.0.0.1:11111  market=hk  acc_index=0  env=SIMULATE  lot_size=100
+2026-05-09 17:56:37.148 | INFO     | __main__:_build_broker:312 - Broker: FutuTradeBroker [SIMULATE]  market=hk  host=127.0.0.1:11111
+2026-05-09 17:56:37.148 | INFO     | __main__:cmd_paper:214 - === PAPER TRADING: strategy=steady_short_term_hk ===
+2026-05-09 17:56:37.153 | INFO     | __main__:cmd_paper:215 - Starting equity: $1,000,000.00
+2026-05-09 17:56:39.097 | INFO     | src.data.us_fetcher:get_universe:39 - Fetched S&P 500 universe: 503 tickers
+2026-05-09 17:56:39.097 | INFO     | src.data.base_fetcher:get_prices:64 - Fetching prices for 503 symbols [2018-01-01 → 2026-05-09]
+2026-05-09 17:56:50.647 | INFO     | src.selection.screener:apply:72 - Screener: starting with 60 symbols
+2026-05-09 17:56:50.649 | INFO     | src.selection.screener:apply:101 - Screener: 1 symbols pass all filters
+2026-05-09 17:56:50.651 | WARNING  | __main__:cmd_paper:251 - No signals generated. Nothing to trade.
+2026-05-09 17:57:21.278 | INFO     | src.execution.futu_trade_broker:__init__:192 - FutuTradeBroker 初始化：host=127.0.0.1:11111  market=hk  acc_index=0  env=SIMULATE  lot_size=100
+2026-05-09 17:57:21.278 | INFO     | __main__:_build_broker:312 - Broker: FutuTradeBroker [SIMULATE]  market=hk  host=127.0.0.1:11111
+2026-05-09 17:57:21.278 | INFO     | __main__:cmd_paper:214 - === PAPER TRADING: strategy=steady_short_term_hk ===
+2026-05-09 17:57:21.283 | INFO     | __main__:cmd_paper:215 - Starting equity: $1,000,000.00
+2026-05-09 17:57:22.821 | INFO     | src.data.us_fetcher:get_universe:40 - Fetched S&P 500 universe: 503 tickers
+2026-05-09 17:57:22.831 | INFO     | src.selection.screener:apply:72 - Screener: starting with 60 symbols
+2026-05-09 17:57:22.833 | INFO     | src.selection.screener:apply:101 - Screener: 1 symbols pass all filters
+2026-05-09 17:57:22.834 | WARNING  | __main__:cmd_paper:251 - No signals generated. Nothing to trade.
+2026-05-09 18:01:19.498 | INFO     | src.execution.futu_trade_broker:__init__:192 - FutuTradeBroker 初始化：host=127.0.0.1:11111  market=hk  acc_index=0  env=SIMULATE  lot_size=100
+2026-05-09 18:01:19.499 | INFO     | __main__:_build_broker:312 - Broker: FutuTradeBroker [SIMULATE]  market=hk  host=127.0.0.1:11111
+2026-05-09 18:01:19.499 | INFO     | __main__:cmd_paper:214 - === PAPER TRADING: strategy=steady_short_term_hk ===
+2026-05-09 18:01:19.502 | INFO     | __main__:cmd_paper:215 - Starting equity: $1,000,000.00
+2026-05-09 18:01:21.360 | INFO     | src.data.us_fetcher:get_universe:40 - Fetched S&P 500 universe: 503 tickers
+2026-05-09 18:01:21.370 | INFO     | src.selection.screener:apply:72 - Screener: starting with 60 symbols
+2026-05-09 18:01:21.373 | INFO     | src.selection.screener:apply:101 - Screener: 1 symbols pass all filters
+2026-05-09 18:01:21.377 | WARNING  | __main__:cmd_paper:251 - No signals generated. Nothing to trade.
+2026-05-09 18:01:53.914 | INFO     | src.execution.futu_trade_broker:__init__:192 - FutuTradeBroker 初始化：host=127.0.0.1:11111  market=hk  acc_index=0  env=SIMULATE  lot_size=100
+2026-05-09 18:01:53.915 | INFO     | __main__:_build_broker:312 - Broker: FutuTradeBroker [SIMULATE]  market=hk  host=127.0.0.1:11111
+2026-05-09 18:01:53.915 | INFO     | __main__:cmd_watch:360 - ============================================================
+2026-05-09 18:01:53.915 | INFO     | __main__:cmd_watch:361 -   盯盤模式啟動（含智能風控）
+2026-05-09 18:01:53.915 | INFO     | __main__:cmd_watch:362 -   策略    : momentum_12_1
+2026-05-09 18:01:53.915 | INFO     | __main__:cmd_watch:363 -   Broker  : futu_paper
+2026-05-09 18:01:53.915 | INFO     | __main__:cmd_watch:364 -   信號Cron: 5 5 * * 2-6
+2026-05-09 18:01:53.915 | INFO     | __main__:cmd_watch:365 -   下單模式: 自動下單
+2026-05-09 18:01:53.915 | INFO     | __main__:cmd_watch:366 -   週報Cron: 0 18 * * 5
+2026-05-09 18:01:53.915 | INFO     | __main__:cmd_watch:367 -   通知渠道: ['email']
+2026-05-09 18:01:53.915 | INFO     | __main__:cmd_watch:368 - ============================================================
+2026-05-09 18:01:54.942 | INFO     | src.notifier:_dispatch:804 - 通知已發送至 1 個渠道：【Auto Trader】盯盤模式已啟動
+2026-05-09 18:01:54.944 | INFO     | src.scheduler:__init__:352 - ✅ trade_on_signal=true：信號觸發後將自動在模擬盤下單
+2026-05-09 18:01:54.944 | INFO     | src.scheduler:__init__:354 - 🛡️ 智能風控已啟用：regime_fast=20d  regime_slow=60d  bs_zscore=3.5σ
+2026-05-09 18:01:54.944 | INFO     | src.scheduler:__init__:360 - WatchScheduler 初始化：strategy=momentum_12_1, market=us, signal_cron='5 5 * * 2-6'
+2026-05-09 18:01:54.944 | INFO     | src.scheduler:__init__:365 - 價格監控間隔 — A 股:60s  港股:10s  美股:10s
+2026-05-09 18:01:54.945 | INFO     | src.scheduler:__init__:372 - 自選股名單（3 只）：['00700', '01810', 'DAO']
+2026-05-09 18:01:54.945 | INFO     | src.scheduler:__init__:373 - 同時盯持倉：True  重複警報：False
+2026-05-09 18:01:54.953 | INFO     | src.scheduler:start:391 - 已添加定時信號任務：cron='5 5 * * 2-6'
+2026-05-09 18:01:54.953 | INFO     | src.scheduler:_add_price_monitor_jobs:467 - 美股快照監控：每 10s
+2026-05-09 18:01:54.953 | INFO     | src.scheduler:start:407 - 已添加技術信號掃描任務：間隔=1800s  短線=True  長線=True
+2026-05-09 18:01:54.953 | INFO     | src.scheduler:start:422 - 已添加週報任務：cron='0 18 * * 5'
+2026-05-09 18:01:54.953 | INFO     | src.scheduler:start:424 - 盯盤調度器啟動，按 Ctrl-C 退出...
+2026-05-09 18:01:54.959 | INFO     | src.scheduler:_run_signal_monitor:846 - [信號掃描] 開始 — 2026-05-09 18:01
+2026-05-09 18:01:54.971 | INFO     | src.scheduler:_run_signal_monitor:864 - [信號掃描] 掃描 3 只：['00700', '01810', 'DAO']
+2026-05-09 18:01:57.380 | INFO     | src.data.base_fetcher:get_prices:64 - Fetching prices for 2 symbols [2025-04-04 → 2026-05-09]
+2026-05-09 18:01:57.712 | INFO     | src.scheduler:_run_signal_monitor:885 - [信號掃描] 本輪無買入信號

@@ -1,0 +1,446 @@
+# =============================================================================
+# Auto Trader Configuration
+# =============================================================================
+
+# ---------------------------------------------------------------------------
+# Market settings
+# ---------------------------------------------------------------------------
+market:
+  # Supported: "us" | "hk" | "cn" | "multi"
+  mode: "us"
+
+  us:
+    # S&P 500 constituents will be fetched dynamically via screener
+    # Override with explicit list to reduce API calls during development
+    universe: []          # empty = fetch from screener
+    benchmark: "SPY"
+    currency: "USD"
+
+  hk:
+    # HSI constituents; prefix with ".HK" for yfinance, or plain for akshare
+    universe: []
+    benchmark: "^HSI"
+    currency: "HKD"
+
+  cn:
+    # CSI 300 constituents; plain A-share codes e.g. "000001.SZ"
+    universe: []
+    benchmark: "000300.SH"
+    currency: "CNY"
+
+# ---------------------------------------------------------------------------
+# Data settings
+# ---------------------------------------------------------------------------
+data:
+  start_date: "2018-01-01"
+  end_date: "2024-12-31"
+  interval: "1d"         # "1d" | "1wk" | "1mo"
+  cache_dir: ".cache/data"
+  cache_enabled: true
+  # Data provider selection (for HK/CN/US): "futu" (default) | "akshare" | "yfinance" 
+  # - futu requires local FutuOpenD running (default 127.0.0.1:11111)
+  # - use akshare as fallback when futu is unavailable
+  provider:
+    hk: "futu"
+    cn: "akshare"
+    us: "futu"
+
+# ---------------------------------------------------------------------------
+# Strategy settings
+# ---------------------------------------------------------------------------
+strategy:
+  # Name must match a key registered via @register_strategy(...)
+  active: "momentum_12_1"
+
+  momentum_12_1:
+    lookback_months: 12
+    skip_months: 1          # skip most-recent month (reversal effect)
+    top_n: 20               # number of stocks to hold
+    rebalance_freq: "M"     # "M" monthly | "W" weekly | "Q" quarterly
+
+  mean_reversion:
+    lookback_days: 5
+    z_score_threshold: 1.5
+    top_n: 20
+    rebalance_freq: "W"
+
+  multi_factor:
+    factors:
+      momentum: 0.4         # weight
+      value: 0.3
+      quality: 0.3
+    top_n: 25
+    rebalance_freq: "M"
+
+  # ── 以下三個策略移植自 QuantConnect Lean Alpha Models ──────────────────
+
+  # 移植自 Lean MacdAlphaModel（MacdAlphaModel.py）
+  # 信號邏輯：MACD signal line / price > bounce_threshold → Buy
+  #           MACD signal line / price < -bounce_threshold → Sell
+  macd:
+    fast_period: 12          # 快線 EMA 週期（Lean 默認 12）
+    slow_period: 26          # 慢線 EMA 週期（Lean 默認 26）
+    signal_period: 9         # Signal line EMA 週期（Lean 默認 9）
+    bounce_threshold: 0.01   # 歸一化閾值：signal/price > 1%（Lean 默認 0.01）
+    top_n: 20
+    rebalance_freq: "D"      # 日線策略，每日重計
+
+  # 移植自 Lean EmaCrossAlphaModel（EmaCrossAlphaModel.py）
+  # 信號邏輯：fast EMA 上穿 slow EMA → Buy（金叉）
+  #           fast EMA 下穿 slow EMA → Sell（死叉）
+  ema_cross:
+    fast_period: 12          # 快線 EMA 週期（Lean 默認 12）
+    slow_period: 26          # 慢線 EMA 週期（Lean 默認 26）
+    cross_tolerance: 3       # 穿越容忍視窗（K 線數）
+    top_n: 20
+    rebalance_freq: "D"
+
+  # 移植自 Lean RsiAlphaModel（RsiAlphaModel.py）
+  # 信號邏輯（Wilder's RSI 狀態機）：
+  #   RSI < oversold(30)   → TRIPPED_LOW  → Buy
+  #   RSI > overbought(70) → TRIPPED_HIGH → Sell
+  #   狀態轉換時才輸出信號（防重複）
+  rsi_contrarian:
+    period: 14               # RSI 週期（Lean 默認 14）
+    oversold: 30             # 超賣閾值（Lean 固定 30）
+    overbought: 70           # 超買閾值（Lean 固定 70）
+    exit_oversold: 35        # 離開超賣閾值（Lean 固定 35）
+    exit_overbought: 65      # 離開超買閾值（Lean 固定 65）
+    top_n: 20
+    rebalance_freq: "D"
+
+  # ── 穩健短線（A 股 / 港股 / 美股 通用）──────────────────────────────
+  # 七個條件全部滿足才入選：
+  #   1. 均線多頭排列：MA5 > MA10 > MA20
+  #   2. 現價 > MA5 且 > MA20
+  #   3. 今日量 > 5 日均量（溫和放量）
+  #   4. 量比 < 2 倍（不爆量）
+  #   5. 近 3 天慢漲，無長上影線（上影佔振幅 < 40%）
+  #   6. 未連漲 4 天以上
+  #   7. 當日漲幅：1%～4%（不追漲停）
+  steady_short_term:
+    ma_periods: [5, 10, 20]       # 均線週期列表（必須包含 3 個，升序）
+    vol_ratio_min: 1.0            # 量比下限（今日量 / 5日均量）
+    vol_ratio_max: 2.0            # 量比上限（超過視為異常放量）
+    gain_min: 0.01                # 當日最低漲幅 1%
+    gain_max: 0.04                # 當日最高漲幅 4%（不追板）
+    max_upper_wick_ratio: 0.40    # 上影線佔振幅比例上限（超過視為壓力位）
+    lookback_days_pattern: 3      # 價格形態回望天數（近 N 天慢漲）
+    max_consecutive_up_days: 3    # 連漲天數上限（連漲 4 天以上不選）
+    enable_pattern_check: true    # 啟用近 3 天形態 + 上影線檢查（A 股完整版）
+    enable_consecutive_up_check: true  # 啟用連漲天數限制（A 股完整版）
+    top_n: 20                     # 最多持有股票數（0 = 不限）
+    rebalance_freq: "D"           # 每日重新計算信號
+
+  # ── 穩健短線（港股版）————————————————————————————————————————————————
+  # 4 個核心條件（無形態過濾 / 無連漲限制）；使用時設置 strategy.active: steady_short_term_hk
+  steady_short_term_hk:
+    ma_periods: [5, 10, 20]       # 均線週期（與 CN 版相同）
+    vol_ratio_min: 1.0            # 量比下限（今日量 > 5 日均量）
+    vol_ratio_max: 2.0            # 量比上限（不爆量）
+    gain_min: 0.02                # 當日最低漲幅 2%（港股動能更強）
+    gain_max: 0.06                # 當日最高漲幅 6%（不追板）
+    enable_pattern_check: false   # ❌ 港股版不做近 N 天慢漲形態
+    enable_consecutive_up_check: false  # ❌ 港股版不做連漲天數限制
+    top_n: 20
+    rebalance_freq: "D"
+
+  # ── 美股趨勢策略（us_trend）——————————————————————————————————————————
+  # ⚠️  美股不用 A 股短線套路：不掃全市場、不做短期均線金叉死叉
+  # 策略邏輯：大盤 ETF + 龍頭科技 → 60 日均線趨勢 + 近支撐入場
+  #
+  # 入場條件（全部滿足）：
+  #   1. 收盤 > MA60（上升趨勢）
+  #   2. 收盤 ≤ MA60 × (1 + entry_zone_pct)（未追高，在支撐附近）
+  #   3. RSI(14) < 70（未超買）
+  #   4. 近 10 天最大回撤 < 12%（近期無重大利空崩跌）
+  #
+  # 使用方式：
+  #   market.mode: "us"
+  #   strategy.active: "us_trend"
+  us_trend:
+    watchlist:                    # 固定優質標的池（可按需增刪）
+      # 大盤 / 行業 ETF
+      - "QQQ"                     # 納指 100 ETF（首選）
+      - "SPY"                     # S&P 500 ETF
+      - "XLK"                     # 科技行業 ETF
+      # 龍頭科技股
+      - "AAPL"                    # 蘋果（穩定現金流 + 趨勢）
+      - "MSFT"                    # 微軟（雲 + AI，趨勢明確）
+      - "NVDA"                    # 英偉達（AI 算力龍頭）
+      - "GOOGL"                   # Alphabet（廣告 + AI）
+      - "META"                    # Meta（廣告回升 + AI）
+      - "AMZN"                    # 亞馬遜（雲 + 電商）
+      - "TSLA"                    # 特斯拉（高波動，需嚴格風控）
+      - "AVGO"                    # 博通（半導體 + AI 網絡）
+      - "ORCL"                    # 甲骨文（雲端轉型）
+
+    ma_trend: 60                  # 趨勢判斷均線週期（60 日 = 約 3 個月）
+    entry_zone_pct: 0.05          # MA60 上方入場區間：0% ~ 5%
+                                  #   > 5%：偏離均線太遠，等回調
+                                  #   ≤ 0%（跌破MA60）：趨勢未確認，不入場
+    rsi_period: 14                # RSI 週期
+    rsi_max: 70                   # RSI 超買上限（> 70 不追）
+    lookback_drawdown: 10         # 近期回撤回望天數
+    max_drawdown_pct: 0.12        # 近期最大允許回撤 12%（超過說明近期有重大利空）
+    top_n: 5                      # 最多持有標的數（ETF + 科技精選，不宜過多）
+    rebalance_freq: "W"           # 週度再平衡（美股趨勢慢，不需每日操作）
+
+# ---------------------------------------------------------------------------
+# 前置篩選器（各市場默認參數，由外部調用方按 market.mode 選擇對應節）
+# ---------------------------------------------------------------------------
+screener:
+
+  # ── A 股（CN）─────────────────────────────────────────────────────────
+  # 使用 CNScreener（需提供 akshare stock_zh_a_spot_em() 快照）
+  cn:
+    price_min: 5.0              # 股價下限（元）
+    price_max: 50.0             # 股價上限（元）
+    float_cap_min: 30e8         # 流通市值下限（30 億元）
+    float_cap_max: 800e8        # 流通市值上限（800 億元）
+    turnover_min: 2.0           # 換手率下限（%）
+    turnover_max: 15.0          # 換手率上限（%）
+    exclude_st: true            # 排除 ST / *ST
+    crash_lookback_days: 20     # 回望窗口（交易日）
+    crash_threshold: -0.08      # 單日暴跌閾值（-8%）
+    limit_down_threshold: -0.095  # 跌停判定閾值（-9.5%）
+
+  # ── 港股（HK）─────────────────────────────────────────────────────────
+  # 使用 HKScreener（需提供 akshare stock_hk_spot_em() 快照）
+  # 流通市值由快照推算：成交量 ÷ (換手率/100) × 最新價
+  hk:
+    price_min: 1.0              # 股價下限（HKD）≥ 1 元，過濾仙股/細價莊股
+    float_cap_min: 50e8         # 流通市值下限（50 億 HKD）
+    float_cap_max: 2000e8       # 流通市值上限（2000 億 HKD）
+    turnover_min: 0.5           # 換手率下限（%）
+    turnover_max: 8.0           # 換手率上限（%）
+    exclude_negative_pb: true   # 排除負資產標的（市淨率 P/B < 0）
+
+  # ── 美股（US）─────────────────────────────────────────────────────────
+  # ⚠️  美股不掃全市場，改用固定優質標的池（us_trend 策略自帶 watchlist）
+  # 此節僅供備用（如需臨時用基礎 Screener 掃全市場時參考）
+  us:
+    min_price: 10.0             # 最低股價（USD）
+    min_avg_dollar_volume: 50e6 # 最低日均成交額（USD 5000 萬，確保充裕流動性）
+    min_listing_days: 252       # 上市至少 1 年
+    exclude_sectors: []
+
+# ---------------------------------------------------------------------------
+# Risk management
+# ---------------------------------------------------------------------------
+risk:
+  max_position_weight: 0.10   # max 10% of portfolio in single stock
+  max_sector_weight: 0.30     # max 30% in a single sector
+  stop_loss_pct: 0.08         # exit if position drops 8%
+  take_profit_pct: 0.25       # optional take-profit
+  max_drawdown_halt: 0.20     # halt trading if portfolio drawdown exceeds 20%
+  commission_rate: 0.001      # 0.1% per trade (each side)
+
+  # ── 智能風控（Smart Risk Control）──────────────────────────────────
+  smart_risk:
+    enabled: true
+
+    # 實時風險指標回溯窗口
+    metrics_lookback_days: 20       # 計算波動率 / 回撤 / VaR 的滾動天數
+
+    # ── 市況狀態機（Regime Detector）──────────────────────────────
+    # 基準指數：由 market.<mode>.benchmark 決定（US=SPY，HK=^HSI）
+    regime_fast_ma: 20              # 快均線週期（交易日）
+    regime_slow_ma: 60              # 慢均線週期（交易日）
+    regime_vol_threshold: 0.25      # 年化波動率閾值（25% = 切換熊市邊界）
+    regime_hysteresis_bars: 3       # 狀態切換所需連續確認 K 線數（防抖）
+
+    # 各市況最大組合倉位上限
+    exposure:
+      bull: 0.40                    # 牛市：最多 40% 資產在股票
+      neutral: 0.20                 # 中性：最多 20%
+      bear: 0.05                    # 熊市：最多 5%（近乎空倉）
+
+    # ── 黑天鵝預警（Black Swan Detector）─────────────────────────
+    # 三重觸發：任意一條滿足即觸發緊急縮倉
+    black_swan_zscore: 3.5          # Z-score 閾值（超 3.5σ 視為極端）
+    black_swan_vol_spike: 3.0       # 波動率驟升倍數（當前 vol / 長期 vol）
+    black_swan_var_confidence: 0.99 # VaR 突破置信度（超 99% VaR 才觸發）
+    black_swan_min_history: 20      # 計算 Z-score / VaR 所需最少歷史觀測數
+    black_swan_emergency_exposure: 0.0  # 觸發後目標倉位（0.0 = 完全清倉）
+
+# ---------------------------------------------------------------------------
+# Backtest settings
+# ---------------------------------------------------------------------------
+backtest:
+  initial_capital: 1000000   # USD
+  slippage_bps: 5            # 5 basis points slippage per trade
+
+# ---------------------------------------------------------------------------
+# Execution settings
+# ---------------------------------------------------------------------------
+execution:
+  # "paper"      = 內存模擬（無需 Futu，適合離線測試）
+  # "futu_paper" = Futu 官方模擬環境（TrdEnv.SIMULATE，需啟動 FutuOpenD）
+  # "alpaca"     = Alpaca 美股實盤 / 紙面交易
+  broker: "futu_paper"
+
+  paper:
+    initial_cash: 1000000
+
+  # ── Futu 模擬盤配置（broker: futu_paper 時生效）──────────────────
+  futu_paper:
+    market: "hk"            # 主要市場："hk" | "us" | "multi"
+    acc_index: 0             # 模擬賬戶索引（FutuOpenD 中的賬戶序號）
+    lot_size: 100            # HK 股默認手數（100 股取整）
+    slippage_bps: 30         # HK 限價單滑點（基點，30 = 0.3%）
+
+  # Futu OpenD 連接配置（quote 和 trade 共用）
+  futu:
+    host: "127.0.0.1"       # FutuOpenD 主機（默認本機）
+    port: 11111              # FutuOpenD 端口（默認 11111）
+
+  alpaca:
+    api_key: ""              # set via environment variable ALPACA_API_KEY
+    api_secret: ""           # set via environment variable ALPACA_SECRET_KEY
+    base_url: "https://paper-api.alpaca.markets"   # paper trading endpoint
+
+# ---------------------------------------------------------------------------
+# 盯盤模式（watch 命令）
+# ---------------------------------------------------------------------------
+watch:
+  # 每日信號計算的 Cron 表達式（APScheduler 格式）
+  # 美股收盤：每個交易日 16:05 ET，對應北京時間 "5 5 * * 2-6"（次日凌晨 5:05）
+  # 港股 / A 股收盤：每個交易日 15:05 北京時間
+  # 下方默認為美股收盤後（北京時間 05:05）
+  signal_cron: "5 5 * * 2-6"
+
+  # 是否啟用盤中止損監控（false = 只保留收盤信號任務，適合只做日線策略）
+  enable_price_monitor: true
+
+  # ── A 股（CN）：AKShare 分鐘線 ──────────────────────────────────────
+  # 接口：ak.stock_zh_a_hist_min_em，延遲約 1 分鐘
+  # 建議輪詢間隔 >= 60s，避免被東方財富封 IP
+  cn_minute_interval_seconds: 60      # 每 1 分鐘
+
+  # ── 港股（HK）：AKShare 實時快照輪詢 ────────────────────────────────
+  # 接口：ak.stock_hk_spot_em，延遲約 10-30 秒
+  hk_snapshot_interval_seconds: 10    # 每 10 秒
+
+  # ── 美股（US）：yfinance fast_info 快照輪詢 ──────────────────────────
+  # 延遲約 15 秒（非 WebSocket 推送）、futu時WebSocket推送（10秒），yfinance時非WebSocket推送（300秒）
+  us_snapshot_interval_seconds: 10   # 每 5 分鐘
+
+  # ── 自選股盯盤名單 ────────────────────────────────────────────────────
+  # 留空（[]）= 自動盯當前所有持倉（由 broker.get_positions() 決定）
+  # 填入股票代碼 = 只盯這幾只，不管是否已建倉（适合「掛單等入場」場景）
+  #
+  # 支持混合市場，系統會按代碼特徵自動路由到對應拉取方式：
+  #   6 位純數字              → A 股分鐘線（AKShare）
+  #   5 位純數字 / 帶 .HK     → 港股快照（AKShare）
+  #   字母代碼（AAPL 等）     → 美股快照（yfinance）
+  #
+  # 使用示例：
+  #   watchlist:
+  #     - "600519"    # 貴州茅台（A 股）
+  #     - "00700"     # 騰訊（港股）
+  #     - "AAPL"      # 蘋果（美股）
+  # watchlist: []
+  watchlist:
+    - "00700"   # 騰訊控股（港股）
+    - "01810"   # 小米集團（港股）
+    - "DAO"    # 有道（美股）
+
+  # 當 watchlist 非空時，是否「同時」也繼續盯持倉（true = 兩者合並）
+  # false = 只盯 watchlist，忽略未在名單中的持倉
+  also_monitor_positions: true
+
+  # 觸達止損 / 止盈閾值後，是否重複推送通知
+  # false = 同一只股票每輪詢週期只推一次（去重，避免刷屏）
+  # true  = 每次輪詢只要仍觸發就推送
+  repeat_alert: false
+
+  # ── 信號觸發自動下單（需配合 broker: futu_paper）──────────────────
+  # true  = 每日信號任務完成後，自動在 Futu 模擬盤執行 rebalance
+  # false = 僅推送通知，不實際下單（純觀察模式）
+  trade_on_signal: true
+
+  # 週報 Cron 表達式（APScheduler 格式）
+  # 默認：每週五 18:00 HKT（港股 / A 股收盤後）
+  # 美股場景：每週六 07:00 HKT（美股週五收盤後次日 HKT 早晨）
+  weekly_report_cron: "0 18 * * 5"
+
+  # ── 盤中技術信號掃描（短線 / 長線買入機會）───────────────────────
+  # 以下掃描任務獨立運行（與止損輪詢頻率不同），分析日線歷史數據
+  # 發現買入信號時推送郵件
+  signal_monitor_interval_seconds: 1800   # 每 30 分鐘掃描一次（建議 >= 900）
+
+  # 短線信號（基於 Lean EmaCrossAlphaModel + RsiAlphaModel + MacdAlphaModel）
+  short_term_signal:
+    enabled: true
+
+    # 觸發模式：
+    #   "any"      — 三個子信號任意一個觸發即買入（寬鬆，默認）
+    #   "majority" — 三個子信號中至少 2 個觸發（中等）
+    #   "all"      — 三個子信號全部觸發（嚴格）
+    trigger_mode: "majority"
+
+    # ── 子信號 1：EMA Cross（移植自 Lean EmaCrossAlphaModel）──
+    ema_fast: 12             # 快線週期（Lean 默認 12）
+    ema_slow: 26             # 慢線週期（Lean 默認 26）
+    cross_tolerance: 3       # 穿越容忍視窗（K 線數）
+
+    # ── 子信號 2：RSI 超賣回升（移植自 Lean RsiAlphaModel）──
+    rsi_period: 14           # Wilder's RSI 週期（Lean 默認 14）
+    rsi_oversold: 30         # 超賣閾值（Lean 固定 30）
+    rsi_exit_oversold: 35    # 離開超賣閾值（Lean 固定 35）
+
+    # ── 子信號 3：MACD（移植自 Lean MacdAlphaModel）──
+    macd_fast: 12            # MACD 快線 EMA（Lean 默認 12）
+    macd_slow: 26            # MACD 慢線 EMA（Lean 默認 26）
+    macd_signal: 9           # Signal line EMA 週期（Lean 默認 9）
+    macd_bounce_threshold: 0.01  # signal/price 歸一化閾值（Lean 默認 0.01）
+
+    # 需要回溯的日線數量（必須覆蓋最長子信號需求：macd_slow + macd_signal）
+    lookback_days: 60
+
+  # 長線信號（適合趨勢跟蹤，信號週期：數月至數年）
+  long_term_signal:
+    enabled: true
+    # MA 金叉：中期均線上穿長期均線
+    ma_fast: 20              # 中期均線週期（交易日）
+    ma_slow: 50              # 長期均線週期（交易日）
+    # 趨勢過濾：只在價格高於長趨勢均線時發信號
+    ma_trend: 200            # 趨勢均線（200 日）
+    # 需要回溯的日線數量（必須 >= ma_trend）
+    lookback_days: 250
+
+# ---------------------------------------------------------------------------
+# 通知配置
+# ---------------------------------------------------------------------------
+notify:
+  enabled: true
+  # 啟用的渠道列表，可選：email、wecom
+  channels:
+    - email
+    # - wecom   # 企業微信暫未啟用，填好 webhook_url 後取消注釋
+
+  # 郵件（SMTP）
+  email:
+    smtp_host: "smtp.qq.com"           # QQ 郵箱用 smtp.qq.com | Gmail 用 smtp.gmail.com | 企業郵箱按實際填寫
+    smtp_port: 465                     # QQ 郵箱：465(SSL) 或 587(STARTTLS)；Gmail：587
+    use_tls: false                     # false = SMTP_SSL(465)；true = STARTTLS(587)
+    username: "1192599423@qq.com"   # 或通過環境變量 EMAIL_USER 傳入
+    password: ""                    # 密碼通過環境變量 EMAIL_PASSWORD 傳入，請勿在此填寫
+    from_addr: "1192599423@qq.com"
+    to_addrs:
+      - "1192599423@qq.com"                             # 收件人地址列表
+
+  # 企業微信群機器人 Webhook
+  wecom:
+    webhook_url: ""   # 👈 把你的 Webhook URL 貼在這裡
+                      # 格式：https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=xxxxxx
+                      # 或通過環境變量 WECOM_WEBHOOK_URL 傳入（更安全）
+
+# ---------------------------------------------------------------------------
+# Logging
+# ---------------------------------------------------------------------------
+logging:
+  level: "INFO"              # DEBUG | INFO | WARNING | ERROR
+  file: "logs/trader.log"
+  rotation: "10 MB"

@@ -1,0 +1,62 @@
+# =============================================================================
+# config.example.yaml  —  copy this to config.yaml and fill in your values
+# =============================================================================
+# This file documents every available setting with its default value.
+# Sensitive credentials should be supplied via environment variables, not here.
+# =============================================================================
+
+market:
+  mode: "us"                  # "us" | "hk" | "cn" | "multi"
+  us:
+    universe: []              # [] = auto-discover via screener
+    benchmark: "SPY"
+    currency: "USD"
+  hk:
+    universe: []
+    benchmark: "^HSI"
+    currency: "HKD"
+  cn:
+    universe: []
+    benchmark: "000300.SH"
+    currency: "CNY"
+
+data:
+  start_date: "2018-01-01"
+  end_date: "2024-12-31"
+  interval: "1d"
+  cache_dir: ".cache/data"
+  cache_enabled: true
+
+strategy:
+  active: "momentum_12_1"
+  momentum_12_1:
+    lookback_months: 12
+    skip_months: 1
+    top_n: 20
+    rebalance_freq: "M"
+
+risk:
+  max_position_weight: 0.10
+  max_sector_weight: 0.30
+  stop_loss_pct: 0.08
+  take_profit_pct: 0.25
+  max_drawdown_halt: 0.20
+  commission_rate: 0.001
+
+backtest:
+  initial_capital: 1000000
+  slippage_bps: 5
+
+execution:
+  broker: "paper"
+  paper:
+    initial_cash: 1000000
+  alpaca:
+    api_key: ""               # or set ALPACA_API_KEY env var
+    api_secret: ""            # or set ALPACA_SECRET_KEY env var
+    base_url: "https://paper-api.alpaca.markets"
+
+logging:
+  level: "INFO"
+  file: "logs/trader.log"
+  rotation: "10 MB"

@@ -1,0 +1,44 @@
+# Core data & computation
+pandas>=2.0.0
+numpy>=1.24.0
+
+# Market data sources
+yfinance>=0.2.40
+akshare>=1.12.0
+futu-api>=10.4.6408
+
+# Technical indicators (pure Python, no TA-Lib C dependency)
+ta>=0.11.0
+
+# Configuration
+pyyaml>=6.0.0
+python-dotenv>=1.0.0
+
+# Logging
+loguru>=0.7.0
+
+# Visualization
+matplotlib>=3.7.0
+plotly>=5.15.0
+
+# Utilities
+requests>=2.31.0
+python-dateutil>=2.8.0
+tqdm>=4.65.0
+
+# 定時調度（盯盤模式）
+apscheduler>=3.10.0
+
+# Jupyter notebooks
+jupyter>=1.0.0
+ipykernel>=6.0.0
+
+# Optional: Alpaca live trading (US market)
+# alpaca-trade-api>=3.0.0
+
+# Optional: Interactive Brokers (multi-market live trading)
+# ibapi>=9.81.1
+
+# Testing
+pytest>=7.4.0
+pytest-cov>=4.1.0
