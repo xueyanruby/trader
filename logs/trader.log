@@ -379,3 +379,134 @@ Portfolio equity: $1,000,000.00
 2026-05-09 18:01:54.971 | INFO     | src.scheduler:_run_signal_monitor:864 - [信號掃描] 掃描 3 只：['00700', '01810', 'DAO']
 2026-05-09 18:01:57.380 | INFO     | src.data.base_fetcher:get_prices:64 - Fetching prices for 2 symbols [2025-04-04 → 2026-05-09]
 2026-05-09 18:01:57.712 | INFO     | src.scheduler:_run_signal_monitor:885 - [信號掃描] 本輪無買入信號
+2026-05-11 14:55:23.736 | INFO     | src.execution.futu_trade_broker:__init__:192 - FutuTradeBroker 初始化：host=127.0.0.1:11111  market=hk  acc_index=0  env=SIMULATE  lot_size=100
+2026-05-11 14:55:23.737 | INFO     | __main__:_build_broker:312 - Broker: FutuTradeBroker [SIMULATE]  market=hk  host=127.0.0.1:11111
+2026-05-11 14:55:23.737 | INFO     | __main__:cmd_watch:360 - ============================================================
+2026-05-11 14:55:23.737 | INFO     | __main__:cmd_watch:361 -   盯盤模式啟動（含智能風控）
+2026-05-11 14:55:23.737 | INFO     | __main__:cmd_watch:362 -   策略    : momentum_12_1
+2026-05-11 14:55:23.737 | INFO     | __main__:cmd_watch:363 -   Broker  : futu_paper
+2026-05-11 14:55:23.737 | INFO     | __main__:cmd_watch:364 -   信號Cron: 5 5 * * 2-6
+2026-05-11 14:55:23.737 | INFO     | __main__:cmd_watch:365 -   下單模式: 自動下單
+2026-05-11 14:55:23.737 | INFO     | __main__:cmd_watch:366 -   週報Cron: 0 18 * * 5
+2026-05-11 14:55:23.737 | INFO     | __main__:cmd_watch:367 -   通知渠道: ['email']
+2026-05-11 14:55:23.737 | INFO     | __main__:cmd_watch:368 - ============================================================
+2026-05-11 14:55:24.838 | INFO     | src.notifier:_dispatch:804 - 通知已發送至 1 個渠道：【Auto Trader】盯盤模式已啟動
+2026-05-11 14:55:24.840 | INFO     | src.scheduler:__init__:352 - ✅ trade_on_signal=true：信號觸發後將自動在模擬盤下單
+2026-05-11 14:55:24.840 | INFO     | src.scheduler:__init__:354 - 🛡️ 智能風控已啟用：regime_fast=20d  regime_slow=60d  bs_zscore=3.5σ
+2026-05-11 14:55:24.840 | INFO     | src.scheduler:__init__:360 - WatchScheduler 初始化：strategy=momentum_12_1, market=us, signal_cron='5 5 * * 2-6'
+2026-05-11 14:55:24.840 | INFO     | src.scheduler:__init__:365 - 價格監控間隔 — A 股:60s  港股:10s  美股:10s
+2026-05-11 14:55:24.840 | INFO     | src.scheduler:__init__:372 - 自選股名單（3 只）：['00700', '01810', 'DAO']
+2026-05-11 14:55:24.840 | INFO     | src.scheduler:__init__:373 - 同時盯持倉：True  重複警報：False
+2026-05-11 14:55:24.848 | INFO     | src.scheduler:start:391 - 已添加定時信號任務：cron='5 5 * * 2-6'
+2026-05-11 14:55:24.848 | INFO     | src.scheduler:_add_price_monitor_jobs:467 - 美股快照監控：每 10s
+2026-05-11 14:55:24.848 | INFO     | src.scheduler:start:407 - 已添加技術信號掃描任務：間隔=1800s  短線=True  長線=True
+2026-05-11 14:55:24.849 | INFO     | src.scheduler:start:422 - 已添加週報任務：cron='0 18 * * 5'
+2026-05-11 14:55:24.849 | INFO     | src.scheduler:start:424 - 盯盤調度器啟動，按 Ctrl-C 退出...
+2026-05-11 14:55:24.854 | INFO     | src.scheduler:_run_signal_monitor:846 - [信號掃描] 開始 — 2026-05-11 14:55
+2026-05-11 14:55:24.867 | INFO     | src.scheduler:_run_signal_monitor:864 - [信號掃描] 掃描 3 只：['00700', '01810', 'DAO']
+2026-05-11 14:55:30.096 | INFO     | src.data.base_fetcher:get_prices:64 - Fetching prices for 2 symbols [2025-04-06 → 2026-05-11]
+2026-05-11 14:55:30.463 | INFO     | src.scheduler:_run_signal_monitor:885 - [信號掃描] 本輪無買入信號
+2026-05-11 15:03:37.687 | INFO     | src.execution.futu_trade_broker:__init__:192 - FutuTradeBroker 初始化：host=127.0.0.1:11111  market=hk  acc_index=0  env=SIMULATE  lot_size=100
+2026-05-11 15:03:37.688 | INFO     | __main__:_build_broker:312 - Broker: FutuTradeBroker [SIMULATE]  market=hk  host=127.0.0.1:11111
+2026-05-11 15:03:37.688 | INFO     | __main__:cmd_watch:360 - ============================================================
+2026-05-11 15:03:37.688 | INFO     | __main__:cmd_watch:361 -   盯盤模式啟動（含智能風控）
+2026-05-11 15:03:37.688 | INFO     | __main__:cmd_watch:362 -   策略    : momentum_12_1
+2026-05-11 15:03:37.688 | INFO     | __main__:cmd_watch:363 -   Broker  : futu_paper
+2026-05-11 15:03:37.688 | INFO     | __main__:cmd_watch:364 -   信號Cron: 5 5 * * 2-6
+2026-05-11 15:03:37.688 | INFO     | __main__:cmd_watch:365 -   下單模式: 自動下單
+2026-05-11 15:03:37.688 | INFO     | __main__:cmd_watch:366 -   週報Cron: 0 18 * * 5
+2026-05-11 15:03:37.688 | INFO     | __main__:cmd_watch:367 -   通知渠道: ['email']
+2026-05-11 15:03:37.688 | INFO     | __main__:cmd_watch:368 - ============================================================
+2026-05-11 15:03:38.676 | INFO     | src.notifier:_dispatch:804 - 通知已發送至 1 個渠道：【Auto Trader】盯盤模式已啟動
+2026-05-11 15:03:38.677 | INFO     | src.scheduler:__init__:352 - ✅ trade_on_signal=true：信號觸發後將自動在模擬盤下單
+2026-05-11 15:03:38.677 | INFO     | src.scheduler:__init__:354 - 🛡️ 智能風控已啟用：regime_fast=20d  regime_slow=60d  bs_zscore=3.5σ
+2026-05-11 15:03:38.677 | INFO     | src.scheduler:__init__:360 - WatchScheduler 初始化：strategy=momentum_12_1, market=us, signal_cron='5 5 * * 2-6'
+2026-05-11 15:03:38.677 | INFO     | src.scheduler:__init__:365 - 價格監控間隔 — A 股:60s  港股:10s  美股:10s
+2026-05-11 15:03:38.677 | INFO     | src.scheduler:__init__:372 - 自選股名單（3 只）：['00700', '01810', 'DAO']
+2026-05-11 15:03:38.677 | INFO     | src.scheduler:__init__:373 - 同時盯持倉：True  重複警報：False
+2026-05-11 15:03:38.681 | INFO     | src.scheduler:start:391 - 已添加定時信號任務：cron='5 5 * * 2-6'
+2026-05-11 15:03:38.682 | INFO     | src.scheduler:_add_price_monitor_jobs:467 - 美股快照監控：每 10s
+2026-05-11 15:03:38.682 | INFO     | src.scheduler:start:407 - 已添加技術信號掃描任務：間隔=1800s  短線=True  長線=True
+2026-05-11 15:03:38.682 | INFO     | src.scheduler:start:422 - 已添加週報任務：cron='0 18 * * 5'
+2026-05-11 15:03:38.682 | INFO     | src.scheduler:start:424 - 盯盤調度器啟動，按 Ctrl-C 退出...
+2026-05-11 15:03:38.685 | INFO     | src.scheduler:_run_signal_monitor:862 - [信號掃描] 開始 — 2026-05-11 15:03
+2026-05-11 15:03:38.694 | INFO     | src.scheduler:_run_signal_monitor:880 - [信號掃描] 掃描 3 只：['00700', '01810', 'DAO']
+2026-05-11 15:03:38.874 | INFO     | src.data.base_fetcher:get_prices:64 - Fetching prices for 1 symbols [2025-04-06 → 2026-05-11]
+2026-05-11 15:03:39.064 | INFO     | src.data.base_fetcher:get_prices:64 - Fetching prices for 2 symbols [2025-04-06 → 2026-05-11]
+2026-05-11 15:03:39.302 | INFO     | src.scheduler:_run_signal_monitor:901 - [信號掃描] 本輪無買入信號
+2026-05-11 15:06:24.325 | INFO     | src.execution.futu_trade_broker:__init__:192 - FutuTradeBroker 初始化：host=127.0.0.1:11111  market=hk  acc_index=0  env=SIMULATE  lot_size=100
+2026-05-11 15:06:24.325 | INFO     | __main__:_build_broker:312 - Broker: FutuTradeBroker [SIMULATE]  market=hk  host=127.0.0.1:11111
+2026-05-11 15:06:24.325 | INFO     | __main__:cmd_watch:360 - ============================================================
+2026-05-11 15:06:24.325 | INFO     | __main__:cmd_watch:361 -   盯盤模式啟動（含智能風控）
+2026-05-11 15:06:24.325 | INFO     | __main__:cmd_watch:362 -   策略    : momentum_12_1
+2026-05-11 15:06:24.325 | INFO     | __main__:cmd_watch:363 -   Broker  : futu_paper
+2026-05-11 15:06:24.325 | INFO     | __main__:cmd_watch:364 -   信號Cron: 5 5 * * 2-6
+2026-05-11 15:06:24.325 | INFO     | __main__:cmd_watch:365 -   下單模式: 自動下單
+2026-05-11 15:06:24.325 | INFO     | __main__:cmd_watch:366 -   週報Cron: 0 18 * * 5
+2026-05-11 15:06:24.325 | INFO     | __main__:cmd_watch:367 -   通知渠道: ['email']
+2026-05-11 15:06:24.325 | INFO     | __main__:cmd_watch:368 - ============================================================
+2026-05-11 15:06:30.650 | INFO     | src.notifier:_dispatch:804 - 通知已發送至 1 個渠道：【Auto Trader】盯盤模式已啟動
+2026-05-11 15:06:30.651 | INFO     | src.scheduler:__init__:352 - ✅ trade_on_signal=true：信號觸發後將自動在模擬盤下單
+2026-05-11 15:06:30.651 | INFO     | src.scheduler:__init__:354 - 🛡️ 智能風控已啟用：regime_fast=20d  regime_slow=60d  bs_zscore=3.5σ
+2026-05-11 15:06:30.652 | INFO     | src.scheduler:__init__:360 - WatchScheduler 初始化：strategy=momentum_12_1, market=us, signal_cron='5 5 * * 2-6'
+2026-05-11 15:06:30.652 | INFO     | src.scheduler:__init__:365 - 價格監控間隔 — A 股:60s  港股:10s  美股:10s
+2026-05-11 15:06:30.652 | INFO     | src.scheduler:__init__:375 - 自選股名單為空，僅盯當前持倉
+2026-05-11 15:06:30.655 | INFO     | src.scheduler:start:391 - 已添加定時信號任務：cron='5 5 * * 2-6'
+2026-05-11 15:06:30.656 | INFO     | src.scheduler:_add_price_monitor_jobs:467 - 美股快照監控：每 10s
+2026-05-11 15:06:30.656 | INFO     | src.scheduler:start:407 - 已添加技術信號掃描任務：間隔=1800s  短線=True  長線=True
+2026-05-11 15:06:30.656 | INFO     | src.scheduler:start:422 - 已添加週報任務：cron='0 18 * * 5'
+2026-05-11 15:06:30.656 | INFO     | src.scheduler:start:424 - 盯盤調度器啟動，按 Ctrl-C 退出...
+2026-05-11 15:06:30.660 | INFO     | src.scheduler:_run_signal_monitor:862 - [信號掃描] 開始 — 2026-05-11 15:06
+2026-05-11 15:06:30.674 | INFO     | src.scheduler:_run_signal_monitor:876 - [信號掃描] 無目標股票，跳過
+2026-05-11 15:11:39.561 | INFO     | __main__:cmd_backtest:102 - === BACKTEST: strategy=momentum_12_1 | market=us | 2018-01-01 → 2024-12-31 ===
+2026-05-11 15:11:39.561 | INFO     | __main__:cmd_backtest:122 - No universe configured — fetching S&P 500
+2026-05-11 15:11:41.360 | INFO     | src.data.us_fetcher:get_universe:40 - Fetched S&P 500 universe: 503 tickers
+2026-05-11 15:11:41.360 | INFO     | __main__:cmd_backtest:127 - --fast mode: limiting universe to 50 symbols
+2026-05-11 15:11:41.361 | INFO     | src.data.base_fetcher:get_prices:64 - Fetching prices for 50 symbols [2018-01-01 → 2024-12-31]
+2026-05-11 15:11:49.652 | INFO     | src.selection.screener:apply:72 - Screener: starting with 50 symbols
+2026-05-11 15:11:49.655 | INFO     | src.selection.screener:apply:101 - Screener: 1 symbols pass all filters
+2026-05-11 15:11:49.662 | INFO     | src.backtest.engine:run:160 - Running backtest: strategy=momentum_12_1, rebalance=M, dates=59, symbols=50
+2026-05-11 15:11:49.666 | WARNING  | src.data.preprocessor:compute_momentum:113 - Not enough data for momentum calculation
+2026-05-11 15:11:49.666 | WARNING  | src.data.preprocessor:compute_momentum:113 - Not enough data for momentum calculation
+2026-05-11 15:11:49.667 | WARNING  | src.data.preprocessor:compute_momentum:113 - Not enough data for momentum calculation
+2026-05-11 15:11:49.668 | WARNING  | src.data.preprocessor:compute_momentum:113 - Not enough data for momentum calculation
+2026-05-11 15:11:49.668 | WARNING  | src.data.preprocessor:compute_momentum:113 - Not enough data for momentum calculation
+2026-05-11 15:11:49.668 | WARNING  | src.data.preprocessor:compute_momentum:113 - Not enough data for momentum calculation
+2026-05-11 15:11:49.668 | WARNING  | src.data.preprocessor:compute_momentum:113 - Not enough data for momentum calculation
+2026-05-11 15:11:49.669 | WARNING  | src.data.preprocessor:compute_momentum:113 - Not enough data for momentum calculation
+2026-05-11 15:11:49.669 | WARNING  | src.data.preprocessor:compute_momentum:113 - Not enough data for momentum calculation
+2026-05-11 15:11:49.669 | WARNING  | src.data.preprocessor:compute_momentum:113 - Not enough data for momentum calculation
+2026-05-11 15:12:01.005 | INFO     | src.backtest.engine:plot:98 - Plot saved to backtest_result.png
+2026-05-11 15:12:01.006 | INFO     | __main__:cmd_backtest:189 - Backtest complete.
+2026-05-11 15:33:54.909 | INFO     | src.execution.futu_trade_broker:__init__:192 - FutuTradeBroker 初始化：host=127.0.0.1:11111  market=hk  acc_index=0  env=SIMULATE  lot_size=100
+2026-05-11 15:33:54.909 | INFO     | __main__:_build_broker:312 - Broker: FutuTradeBroker [SIMULATE]  market=hk  host=127.0.0.1:11111
+2026-05-11 15:33:54.909 | INFO     | __main__:cmd_watch:360 - ============================================================
+2026-05-11 15:33:54.909 | INFO     | __main__:cmd_watch:361 -   盯盤模式啟動（含智能風控）
+2026-05-11 15:33:54.910 | INFO     | __main__:cmd_watch:362 -   策略    : momentum_12_1
+2026-05-11 15:33:54.910 | INFO     | __main__:cmd_watch:363 -   Broker  : futu_paper
+2026-05-11 15:33:54.910 | INFO     | __main__:cmd_watch:364 -   信號Cron: 5 5 * * 2-6
+2026-05-11 15:33:54.910 | INFO     | __main__:cmd_watch:365 -   下單模式: 自動下單
+2026-05-11 15:33:54.910 | INFO     | __main__:cmd_watch:366 -   週報Cron: 0 18 * * 5
+2026-05-11 15:33:54.910 | INFO     | __main__:cmd_watch:367 -   通知渠道: ['email']
+2026-05-11 15:33:54.910 | INFO     | __main__:cmd_watch:368 - ============================================================
+2026-05-11 15:33:55.710 | INFO     | src.notifier:_dispatch:873 - 通知已發送至 1 個渠道：【Auto Trader】盯盤模式已啟動
+2026-05-11 15:33:55.712 | INFO     | src.scheduler:__init__:373 - ✅ trade_on_signal=true：信號觸發後將自動在模擬盤下單
+2026-05-11 15:33:55.712 | INFO     | src.scheduler:__init__:375 - 🛡️ 智能風控已啟用：regime_fast=20d  regime_slow=60d  bs_zscore=3.5σ
+2026-05-11 15:33:55.712 | INFO     | src.scheduler:__init__:381 - WatchScheduler 初始化：strategy=momentum_12_1, market=us, signal_cron='5 5 * * 2-6'
+2026-05-11 15:33:55.712 | INFO     | src.scheduler:__init__:386 - 價格監控間隔 — A 股:60s  港股:10s  美股:10s
+2026-05-11 15:33:55.712 | INFO     | src.scheduler:__init__:399 - 自選股為空：技術信號掃描將併入默認全池（market=us，全池最多納入 200 只）；持倉仍會納入（見 also_monitor_positions）
+2026-05-11 15:33:55.718 | INFO     | src.scheduler:start:420 - 已添加定時信號任務：cron='5 5 * * 2-6'
+2026-05-11 15:33:55.718 | INFO     | src.scheduler:_add_price_monitor_jobs:496 - 美股快照監控：每 10s
+2026-05-11 15:33:55.718 | INFO     | src.scheduler:start:436 - 已添加技術信號掃描任務：間隔=1800s  短線=True  長線=True
+2026-05-11 15:33:55.718 | INFO     | src.scheduler:start:451 - 已添加週報任務：cron='0 18 * * 5'
+2026-05-11 15:33:55.718 | INFO     | src.scheduler:start:453 - 盯盤調度器啟動，按 Ctrl-C 退出...
+2026-05-11 15:33:55.724 | INFO     | src.scheduler:_run_signal_monitor:945 - [信號掃描] 開始 — 2026-05-11 15:33
+2026-05-11 15:33:57.482 | INFO     | src.data.us_fetcher:get_universe:40 - Fetched S&P 500 universe: 503 tickers
+2026-05-11 15:33:57.482 | INFO     | src.scheduler:_run_signal_monitor:966 - [信號掃描] 已併入默認全池 200 只
+2026-05-11 15:33:57.482 | INFO     | src.scheduler:_run_signal_monitor:976 - [信號掃描] 掃描 200 只：['A', 'AAPL', 'ABBV', 'ABNB', 'ABT', 'ACGL', 'ACN', 'ADBE', 'ADI', 'ADM', 'ADP', 'ADSK'] …
+2026-05-11 15:33:57.482 | INFO     | src.data.base_fetcher:get_prices:64 - Fetching prices for 72 symbols [2025-04-06 → 2026-05-11]
+2026-05-11 15:34:04.120 | INFO     | src.data.base_fetcher:get_prices:64 - Fetching prices for 72 symbols [2025-04-06 → 2026-05-11]
+2026-05-11 15:34:04.200 | INFO     | src.data.base_fetcher:get_prices:64 - Fetching prices for 56 symbols [2025-04-06 → 2026-05-11]
+2026-05-11 15:34:04.329 | INFO     | src.notifier:send_buy_signal_digest:781 - 買入信號匯總：掃描 200 只，觸發 2 只，推送一封匯總郵件
+2026-05-11 15:34:05.203 | INFO     | src.notifier:_dispatch:873 - 通知已發送至 1 個渠道：【買入信號匯總】全池掃描 200 只 → 本輪觸發 2 只
+2026-05-11 15:34:05.203 | INFO     | src.scheduler:_run_signal_monitor:1056 - [信號掃描] 完成：本輪觸發 2 個信號，新推送 2 個（匯總郵件）

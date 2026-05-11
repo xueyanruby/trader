@@ -9,7 +9,7 @@
 │  美股（US）    │  yfinance 快照輪詢     │  ~15 秒                 │
 └─────────────────────────────────────────────────────────────────┘
 
-兩種觸發邏輯
+三種觸發邏輯
 -----------
 1. 定時信號任務（Cron）
    每個交易日收盤後自動執行：拉日線 → 計算策略信號 → 比對上次倉位
@@ -21,6 +21,10 @@
    - 港股：akshare.stock_hk_spot_em        拉實時快照
    - 美股：yfinance Ticker.fast_info        拉快速報價
    價格一旦觸碰止損 / 止盈 / 熔斷閾值，立即推送高優先級警報
+
+3. 技術信號掃描（Interval，默認 30 分鐘）
+   拉日線 → 短線/長線買入技術信號；watchlist 為空且開啟全池選項時掃描默認股票池
+   （與每日任務同源），觸發後郵件通知（標的多時一封匯總）。
 
 依賴
 ----
@@ -315,6 +319,23 @@ class WatchScheduler:
             self.short_signal_cfg.get("enabled", True)
             or self.long_signal_cfg.get("enabled", True)
         )
+        # watchlist 為空時，技術掃描是否併入默認全池（與每日任務同源：US=S&P500 等）
+        self.signal_monitor_full_pool_when_watchlist_empty: bool = watch_cfg.get(
+            "signal_monitor_full_pool_when_watchlist_empty", True
+        )
+        self.signal_monitor_max_universe_symbols: int = int(
+            watch_cfg.get("signal_monitor_max_universe_symbols", 0) or 0
+        )
+        # 掃描標的數 >= 該值且本輪有信號時，合併一封「匯總郵件」
+        self.signal_monitor_digest_min_scan_count: int = int(
+            watch_cfg.get("signal_monitor_digest_min_scan_count", 50) or 50
+        )
+        self.signal_monitor_digest_detail_limit: int = int(
+            watch_cfg.get("signal_monitor_digest_detail_limit", 8) or 8
+        )
+        self.signal_monitor_us_yfinance_chunk_size: int = int(
+            watch_cfg.get("signal_monitor_us_yfinance_chunk_size", 72) or 72
+        )
 
         # 內部狀態
         self._last_signals: Dict[str, int] = {}
@@ -372,7 +393,15 @@ class WatchScheduler:
             logger.info(f"自選股名單（{len(self.watchlist)} 只）：{self.watchlist}")
             logger.info(f"同時盯持倉：{self.also_monitor_positions}  重複警報：{self.repeat_alert}")
         else:
-            logger.info("自選股名單為空，僅盯當前持倉")
+            if self.signal_monitor_full_pool_when_watchlist_empty:
+                cap = self.signal_monitor_max_universe_symbols
+                cap_txt = f"，全池最多納入 {cap} 只" if cap > 0 else ""
+                logger.info(
+                    f"自選股為空：技術信號掃描將併入默認全池（market={self.market_mode}{cap_txt}）"
+                    "；持倉仍會納入（見 also_monitor_positions）"
+                )
+            else:
+                logger.info("自選股名單為空，僅盯當前持倉（已關閉全池技術掃描）")
 
     # ------------------------------------------------------------------
     # 啟動 / 停止
@@ -777,10 +806,26 @@ class WatchScheduler:
         end = str(date.today())
 
         market_cfg = self.config.get("market", {})
+        cache_dir = data_cfg.get("cache_dir", ".cache/data")
 
         if self.market_mode in ("us", "multi"):
-            fetcher = USFetcher(cache_dir=data_cfg.get("cache_dir", ".cache/data"), cache_enabled=False)
-            universe = market_cfg.get("us", {}).get("universe") or fetcher.get_universe()
+            us_provider = provider_cfg.get("us", "yfinance")
+            # universe 統一由 USFetcher 提供（S&P 500 或配置覆蓋）；
+            # FutuUSFetcher 不維護 universe，僅負責按 symbols 拉日線
+            us_universe_src = USFetcher(cache_dir=cache_dir, cache_enabled=False)
+            universe = market_cfg.get("us", {}).get("universe") or us_universe_src.get_universe()
+
+            if us_provider == "futu":
+                try:
+                    from src.data.futu_us_fetcher import FutuUSFetcher
+                    fetcher = FutuUSFetcher(cache_dir=cache_dir, cache_enabled=False)
+                except Exception as exc:
+                    logger.warning(
+                        f"[數據] FutuUSFetcher 初始化失敗，回退到 yfinance：{exc}"
+                    )
+                    fetcher = us_universe_src
+            else:
+                fetcher = us_universe_src
             prices = fetcher.get_prices(universe, start=start, end=end)
 
         elif self.market_mode == "cn":
@@ -831,6 +876,59 @@ class WatchScheduler:
         peak = self.risk_manager._peak_equity
         return (current_equity - peak) / peak if peak > 0 else 0.0
 
+    def _resolve_signal_monitor_universe(self) -> List[str]:
+        """
+        與每日收盤任務一致的「默認股票池」代碼列表（universe 為空時由數據源拉取）。
+        multi 模式：港股 + A 股 + 美股 合併（去重）。
+        """
+        from src.data.us_fetcher import USFetcher
+        from src.data.cn_hk_fetcher import CNHKFetcher
+        from src.data.futu_cnhk_fetcher import FutuCNHKFetcher
+
+        data_cfg = self.config.get("data", {})
+        market_cfg = self.config.get("market", {})
+        cache_dir = data_cfg.get("cache_dir", ".cache/data")
+        provider_cfg = data_cfg.get("provider", {}) or {}
+        merged: List[str] = []
+        mode = self.market_mode
+
+        if mode in ("us", "multi"):
+            us_universe_src = USFetcher(cache_dir=cache_dir, cache_enabled=True)
+            u = market_cfg.get("us", {}).get("universe") or []
+            if not u:
+                u = us_universe_src.get_universe()
+            merged.extend(u)
+
+        if mode in ("hk", "multi"):
+            hk_provider = provider_cfg.get("hk", "futu")
+            if hk_provider == "akshare":
+                hk_fetch = CNHKFetcher(market="hk", cache_dir=cache_dir, cache_enabled=True)
+            else:
+                hk_fetch = FutuCNHKFetcher(market="hk", cache_dir=cache_dir, cache_enabled=True)
+            u = market_cfg.get("hk", {}).get("universe") or []
+            if not u:
+                u = hk_fetch.get_universe()
+            merged.extend(u)
+
+        if mode in ("cn", "multi"):
+            cn_provider = provider_cfg.get("cn", "futu")
+            if cn_provider == "akshare":
+                cn_fetch = CNHKFetcher(market="cn", cache_dir=cache_dir, cache_enabled=True)
+            else:
+                cn_fetch = FutuCNHKFetcher(market="cn", cache_dir=cache_dir, cache_enabled=True)
+            u = market_cfg.get("cn", {}).get("universe") or []
+            if not u:
+                u = cn_fetch.get_universe()
+            merged.extend(u)
+
+        seen: Set[str] = set()
+        out: List[str] = []
+        for sym in merged:
+            if sym and sym not in seen:
+                seen.add(sym)
+                out.append(sym)
+        return out
+
     # ------------------------------------------------------------------
     # 任務 3：盤中技術信號掃描（短線 / 長線買入機會）
     # ------------------------------------------------------------------
@@ -838,14 +936,14 @@ class WatchScheduler:
     def _run_signal_monitor(self) -> None:
         """
         以配置的時間間隔執行技術信號掃描。
-        對 watchlist + 持倉中的股票拉取日線歷史，分析短線/長線買入信號，
-        發現信號後推送郵件（同一只股票同一天去重）。
+        掃描對象：watchlist +（可選）持倉；若 watchlist 為空且開啟全池選項，
+        則併入與每日任務一致的默認股票池（S&P500 / 恒指 / 滬深300；multi 為合併）。
+        發現買入技術信號後推送郵件（同一只股票同一信號類型當日去重）。
         """
         from src.signal_analyzer import SignalAnalyzer
 
         logger.info(f"[信號掃描] 開始 — {datetime.now():%Y-%m-%d %H:%M}")
 
-        # 構建掃描股票列表
         positions = {}
         try:
             positions = self.broker.get_positions()
@@ -856,25 +954,40 @@ class WatchScheduler:
         if self.also_monitor_positions or not self.watchlist:
             target |= set(positions.keys())
 
+        if (
+            not self.watchlist
+            and self.signal_monitor_full_pool_when_watchlist_empty
+            and self.market_mode in ("us", "hk", "cn", "multi")
+        ):
+            uni = self._resolve_signal_monitor_universe()
+            if self.signal_monitor_max_universe_symbols > 0:
+                uni = uni[: self.signal_monitor_max_universe_symbols]
+            target |= set(uni)
+            logger.info(f"[信號掃描] 已併入默認全池 {len(uni)} 只")
+
         if not target:
             logger.info("[信號掃描] 無目標股票，跳過")
             return
 
         symbols = sorted(target)
-        logger.info(f"[信號掃描] 掃描 {len(symbols)} 只：{symbols}")
+        scan_count = len(symbols)
+        sym_preview = symbols[:12]
+        more = " …" if scan_count > len(sym_preview) else ""
+        logger.info(f"[信號掃描] 掃描 {scan_count} 只：{sym_preview}{more}")
 
-        # 決定需要的最大回溯天數
         short_days = int(self.short_signal_cfg.get("lookback_days", 60)) if self.short_signal_cfg.get("enabled", True) else 0
         long_days = int(self.long_signal_cfg.get("lookback_days", 250)) if self.long_signal_cfg.get("enabled", True) else 0
         lookback_days = max(short_days, long_days, 60)
 
-        # 拉取日線歷史（各市場路由）
-        price_data = self._fetch_short_history(symbols, lookback_days=lookback_days)
+        price_data = self._fetch_short_history(
+            symbols,
+            lookback_days=lookback_days,
+            us_chunk_size=self.signal_monitor_us_yfinance_chunk_size,
+        )
         if not price_data:
             logger.warning("[信號掃描] 未能獲取任何歷史數據，跳過")
             return
 
-        # 分析信號
         analyzer = SignalAnalyzer(
             short_cfg=self.short_signal_cfg,
             long_cfg=self.long_signal_cfg,
@@ -885,30 +998,65 @@ class WatchScheduler:
             logger.info("[信號掃描] 本輪無買入信號")
             return
 
-        # 每日去重，避免重複推送同一只股票同一類型信號
         today = date.today()
         if self._alert_reset_date != today:
             self._alerted_today.clear()
             self._alert_reset_date = today
 
-        pushed = 0
+        fired_to_notify: List = []
         for r in fired_results:
             alert_key = f"sig:{r.symbol}:{r.signal_type}"
             if not self.repeat_alert and alert_key in self._alerted_today:
                 logger.debug(f"[信號掃描] {r.symbol} {r.signal_type} 今日已推送，跳過")
                 continue
+            fired_to_notify.append(r)
 
-            self.notifier.send_buy_signal_alert(
-                symbol=r.symbol,
-                price=r.price,
-                signal_type=r.signal_type,
-                short_detail=r.short_detail if r.short_fired else {},
-                long_detail=r.long_detail if r.long_fired else {},
+        if not fired_to_notify:
+            logger.info(
+                f"[信號掃描] 本輪共 {len(fired_results)} 個信號，均在今日已推送過（去重），不發郵件"
             )
-            self._alerted_today.add(alert_key)
-            pushed += 1
+            return
 
-        logger.info(f"[信號掃描] 完成：發現 {len(fired_results)} 個信號，推送 {pushed} 個")
+        use_digest = scan_count >= self.signal_monitor_digest_min_scan_count
+        if use_digest:
+            digest_rows = [
+                {
+                    "symbol": r.symbol,
+                    "price": r.price,
+                    "signal_type": r.signal_type or "",
+                    "short_fired": r.short_fired,
+                    "long_fired": r.long_fired,
+                    "short_detail": r.short_detail if r.short_fired else {},
+                    "long_detail": r.long_detail if r.long_fired else {},
+                }
+                for r in fired_to_notify
+            ]
+            self.notifier.send_buy_signal_digest(
+                scan_count=scan_count,
+                rows=digest_rows,
+                detail_limit=self.signal_monitor_digest_detail_limit,
+            )
+            for r in fired_to_notify:
+                self._alerted_today.add(f"sig:{r.symbol}:{r.signal_type}")
+            pushed = len(fired_to_notify)
+        else:
+            pushed = 0
+            for r in fired_to_notify:
+                alert_key = f"sig:{r.symbol}:{r.signal_type}"
+                self.notifier.send_buy_signal_alert(
+                    symbol=r.symbol,
+                    price=r.price,
+                    signal_type=r.signal_type,
+                    short_detail=r.short_detail if r.short_fired else {},
+                    long_detail=r.long_detail if r.long_fired else {},
+                )
+                self._alerted_today.add(alert_key)
+                pushed += 1
+
+        logger.info(
+            f"[信號掃描] 完成：本輪觸發 {len(fired_results)} 個信號，新推送 {pushed} 個"
+            f"（{'匯總郵件' if use_digest else '逐只郵件'}）"
+        )
 
     # ------------------------------------------------------------------
     # 週報任務
@@ -1302,10 +1450,14 @@ class WatchScheduler:
         self,
         symbols: List[str],
         lookback_days: int = 250,
+        us_chunk_size: int = 72,
     ) -> Dict[str, "pd.Series"]:
         """
         按市場路由，批量拉取最近 lookback_days 根日線收盤價。
         返回 {symbol: pd.Series(close, index=date)}。
+
+        us_chunk_size
+            美股標的較多時分批拉取（yfinance / Futu），減少單次請求過大失敗。
         """
         import pandas as pd
         from datetime import timedelta
@@ -1319,34 +1471,59 @@ class WatchScheduler:
         start_str = start_date.strftime("%Y-%m-%d")
         end_str = end_date.strftime("%Y-%m-%d")
 
-        # ── 美股：yfinance ──────────────────────────────────────────────
+        # ── 美股：按 data.provider.us 路由（futu | yfinance），大批量時分批 ──
         if us_syms:
+            us_provider = self.config.get("data", {}).get("provider", {}).get("us", "yfinance")
+            chunk_sz = max(20, min(int(us_chunk_size or 72), 120))
+            batches = [us_syms[i : i + chunk_sz] for i in range(0, len(us_syms), chunk_sz)]
             try:
-                import yfinance as yf
-                raw = yf.download(
-                    us_syms,
-                    start=start_str,
-                    end=end_str,
-                    auto_adjust=True,
-                    progress=False,
-                )
-                if not raw.empty:
-                    close = raw["Close"] if "Close" in raw.columns else raw.iloc[:, 0]
-                    if isinstance(close, pd.DataFrame):
-                        for sym in us_syms:
+                if us_provider == "futu":
+                    from src.data.futu_us_fetcher import FutuUSFetcher
+
+                    fetcher = FutuUSFetcher(cache_enabled=False)
+                    for batch in batches:
+                        prices = fetcher.get_prices(batch, start=start_str, end=end_str, interval="1d")
+                        if prices.empty:
+                            continue
+                        close = prices.xs("close", level="field", axis=1)
+                        for sym in batch:
                             if sym in close.columns:
                                 s = close[sym].dropna()
                                 if not s.empty:
                                     result[sym] = s
-                    else:
-                        # 單只股票時返回 Series
-                        sym = us_syms[0]
-                        s = close.dropna()
-                        if not s.empty:
-                            result[sym] = s
-                logger.debug(f"[信號掃描] 美股日線：{len([s for s in us_syms if s in result])}/{len(us_syms)} 只")
+                else:
+                    import yfinance as yf
+
+                    for batch in batches:
+                        raw = yf.download(
+                            batch,
+                            start=start_str,
+                            end=end_str,
+                            auto_adjust=True,
+                            progress=False,
+                        )
+                        if raw.empty:
+                            continue
+                        close = raw["Close"] if "Close" in raw.columns else raw.iloc[:, 0]
+                        if isinstance(close, pd.DataFrame):
+                            for sym in batch:
+                                if sym in close.columns:
+                                    s = close[sym].dropna()
+                                    if not s.empty:
+                                        result[sym] = s
+                        else:
+                            sym = batch[0]
+                            s = close.dropna()
+                            if not s.empty:
+                                result[sym] = s
+                logger.debug(
+                    f"[信號掃描] 美股日線（provider={us_provider}，{len(batches)} 批）："
+                    f"{len([s for s in us_syms if s in result])}/{len(us_syms)} 只"
+                )
             except Exception as exc:
-                logger.warning(f"[信號掃描] 美股日線拉取失敗：{exc}")
+                logger.warning(
+                    f"[信號掃描] 美股日線拉取失敗（provider={us_provider}）：{exc}"
+                )
 
         # ── 港股：AKShare ───────────────────────────────────────────────
         if hk_syms:

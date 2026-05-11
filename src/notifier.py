@@ -170,6 +170,58 @@ class MessageBuilder:
         return subject, body
 
     @staticmethod
+    def buy_signal_digest(
+        scan_count: int,
+        rows: List[Dict[str, Any]],
+        detail_limit: int = 8,
+    ) -> tuple[str, str]:
+        """
+        全池技術掃描匯總郵件（多只股票一封，避免刷屏）。
+
+        rows: 每项含 symbol, price, signal_type, short_detail, long_detail, short_fired, long_fired
+        """
+        n = len(rows)
+        subject = f"【買入信號匯總】全池掃描 {scan_count} 只 → 本輪觸發 {n} 只"
+        lines = [
+            f"掃描標的數：{scan_count}",
+            f"本輪觸發買入技術信號：{n} 只",
+            "",
+            "── 觸發列表 ──",
+        ]
+        for i, row in enumerate(rows):
+            sym = row.get("symbol", "")
+            price = row.get("price", 0.0)
+            st = row.get("signal_type", "")
+            lines.append(f"  {i + 1}. {sym}  價≈{float(price):.4f}  ({st})")
+
+        lines.append("")
+        lines.append("── 詳情（前若干只）──")
+        for i, row in enumerate(rows[: max(0, detail_limit)]):
+            sym = row.get("symbol", "")
+            st = row.get("signal_type", "")
+            lines.append(f"### {sym} ({st})")
+            if row.get("short_fired") and row.get("short_detail"):
+                lines.append("  短線:")
+                for k, v in (row.get("short_detail") or {}).items():
+                    lines.append(f"    {k}: {v}")
+            if row.get("long_fired") and row.get("long_detail"):
+                lines.append("  長線:")
+                for k, v in (row.get("long_detail") or {}).items():
+                    lines.append(f"    {k}: {v}")
+            lines.append("")
+
+        if n > detail_limit:
+            lines.append(f"… 其餘 {n - detail_limit} 只僅列於上表，詳情請查日誌。")
+            lines.append("")
+
+        lines += [
+            "⚠️  以上為技術信號，不構成投資建議。",
+            f"— Auto Trader {datetime.now().strftime('%Y-%m-%d %H:%M')}",
+        ]
+        body = "\n".join(lines)
+        return subject, body
+
+    @staticmethod
     def portfolio_report(summary: Dict[str, Any]) -> tuple[str, str]:
         date_str = datetime.now().strftime("%Y-%m-%d")
         subject = f"【每日報告】{date_str} 持倉摘要"
@@ -710,6 +762,23 @@ class Notifier:
             long_detail=long_detail or {},
         )
         logger.info(f"買入信號：{symbol} ({signal_type})，推送通知")
+        self._dispatch(subject, body)
+
+    def send_buy_signal_digest(
+        self,
+        scan_count: int,
+        rows: List[Dict[str, Any]],
+        detail_limit: int = 8,
+    ) -> None:
+        """全池掃描後多只股票合併為一封通知。"""
+        if not self.enabled or not rows:
+            return
+        subject, body = MessageBuilder.buy_signal_digest(
+            scan_count=scan_count,
+            rows=rows,
+            detail_limit=detail_limit,
+        )
+        logger.info(f"買入信號匯總：掃描 {scan_count} 只，觸發 {len(rows)} 只，推送一封匯總郵件")
         self._dispatch(subject, body)
 
     def send_portfolio_report(self, summary: Dict[str, Any]) -> None:

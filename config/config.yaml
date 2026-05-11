@@ -327,8 +327,9 @@ watch:
   us_snapshot_interval_seconds: 10   # 每 5 分鐘
 
   # ── 自選股盯盤名單 ────────────────────────────────────────────────────
-  # 留空（[]）= 自動盯當前所有持倉（由 broker.get_positions() 決定）
-  # 填入股票代碼 = 只盯這幾只，不管是否已建倉（适合「掛單等入場」場景）
+  # 留空（[]）：止損輪詢僅盯持倉；技術信號掃描在 signal_monitor_full_pool_when_watchlist_empty=true 時
+  #           會併入默認全池（US=S&P500 / HK=恒指 / CN=滬深300）+ 可選持倉，按間隔掃描並發郵件。
+  # 填入代碼 = 只掃/盯這幾只（適合「掛單等入場」）；與 also_monitor_positions 合併規則見下方。
   #
   # 支持混合市場，系統會按代碼特徵自動路由到對應拉取方式：
   #   6 位純數字              → A 股分鐘線（AKShare）
@@ -340,11 +341,11 @@ watch:
   #     - "600519"    # 貴州茅台（A 股）
   #     - "00700"     # 騰訊（港股）
   #     - "AAPL"      # 蘋果（美股）
-  # watchlist: []
-  watchlist:
-    - "00700"   # 騰訊控股（港股）
-    - "01810"   # 小米集團（港股）
-    - "DAO"    # 有道（美股）
+  watchlist: []
+  # watchlist:
+  #   - "00700"   # 騰訊控股（港股）
+  #   - "01810"   # 小米集團（港股）
+  #   - "DAO"    # 有道（美股）
 
   # 當 watchlist 非空時，是否「同時」也繼續盯持倉（true = 兩者合並）
   # false = 只盯 watchlist，忽略未在名單中的持倉
@@ -369,6 +370,17 @@ watch:
   # 以下掃描任務獨立運行（與止損輪詢頻率不同），分析日線歷史數據
   # 發現買入信號時推送郵件
   signal_monitor_interval_seconds: 1800   # 每 30 分鐘掃描一次（建議 >= 900）
+
+  # watchlist 為空時：技術掃描併入「默認全池」（與每日任務同源：US=S&P500，HK=恒指，CN=滬深300；multi=三者合併）
+  signal_monitor_full_pool_when_watchlist_empty: true
+  # 全池掃描最多納入多少只（0=不限制；耗時/API 敏感時可設 150~300）
+  signal_monitor_max_universe_symbols: 200
+  # 掃描標的數 >= 該值且本輪有信號時發一封「匯總郵件」；低於則逐只發郵件（短名單場景）
+  signal_monitor_digest_min_scan_count: 50
+  # 匯總郵件內附帶指標詳情的最多只數
+  signal_monitor_digest_detail_limit: 8
+  # 美股日線分批拉取每批只數（標的很多時減少單次請求失敗）
+  signal_monitor_us_yfinance_chunk_size: 72
 
   # 短線信號（基於 Lean EmaCrossAlphaModel + RsiAlphaModel + MacdAlphaModel）
   short_term_signal:

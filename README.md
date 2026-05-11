@@ -67,9 +67,9 @@ source ~/.zshrc
 > QQ 郵箱需使用「授權碼」而非登錄密碼：  
 > QQ 郵箱網頁版 → 設置 → 賬戶 → 開啟 SMTP → 生成授權碼
 
-### 第三步：配置自選股盯盤名單
+### 第三步：配置自選股盯盤名單（可選）
 
-在 `config/config.yaml` 的 `watch.watchlist` 填入股票代碼：
+**方式 A — 指定自選股**：在 `watch.watchlist` 填入代碼，技術信號掃描只分析這些標的（可再配合 `also_monitor_positions` 合併持倉）。
 
 ```yaml
 watch:
@@ -78,6 +78,10 @@ watch:
     - "AAPL"    # 蘋果（美股）
     # - "600519"  # 貴州茅台（A 股）
 ```
+
+**方式 B — 不指定股票、從默認全池掃描**：`watchlist: []` 且保持 `signal_monitor_full_pool_when_watchlist_empty: true`（默認）。  
+系統按 `watch.signal_monitor_interval_seconds`（默認 1800 = 30 分鐘）對 **與每日任務相同的全池**（`market.mode` 為 us 時 S&P 500，hk 恒指成分，cn 滬深 300，multi 為三者合併）拉日線，用短線/長線技術規則篩「買入信號」，並發郵件；掃描標的較多時默認 **一封匯總郵件**（見 `signal_monitor_digest_min_scan_count`）。  
+可選：`signal_monitor_max_universe_symbols` 限制全池只數，減輕耗時與 API 壓力。
 
 ### 第四步：啟動盯盤服務
 
